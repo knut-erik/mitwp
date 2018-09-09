@@ -11,7 +11,7 @@ function optionsHTML() {
         TODO: Get categories from event in WP
         TODO: Display those and add a field to enter UID from labora
         TODO: Enable Remove / Add feature
-        TODO: Post / delete - add
+        TODO: Post / delete - add ..
     -->
     <!-- One Form -->
     <form role="form" method="post" action="admin.php?page=mitwp-options">
