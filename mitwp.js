@@ -50,10 +50,9 @@ function saveImports(urlUID){
 
     jQuery.post(postUrl, post_data, function(data, status){
 
-
         console.log(status);
-        },'json');
 
+        },'json');
 }
 
 
