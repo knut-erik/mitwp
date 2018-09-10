@@ -27,14 +27,32 @@ function saveImports(urlUID){
 
     //Loop igjennom - hent UID, Tittel, Fra og til dato, beskrivelse
     //Post og lag ny
-    var $post_data = { uid: '222', category: 'aaa' };
+/*
+    //run through each row
+    //var rows = $("#imp_table tr:gt(0)");
+    var rows = $("#imp_table_body tr:gt(0)");
 
 
-    jQuery.post(postUrl, $post_data, function(data, status){
 
-        //console.log(data[0]);
-        console.log(status);
+    rows.each(function(index) {
+        var importornot = $("td:nth-child(1) input", this);
+        var summary = $("td:nth-child(3) div", this);
+        console.log(importornot.val());
+        console.log(summary.val());
     });
+*/
+
+    var post_data = {uid: "234234DF",
+        category: "gudstjeneste",
+        dtend : new Date(),
+        summary : "summary"
+    };
+
+    jQuery.post(postUrl, post_data, function(data, status){
+
+
+        console.log(status);
+        },'json');
 
 }
 
