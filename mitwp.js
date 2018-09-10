@@ -107,10 +107,13 @@ function getICalTable(data){
 
         var tblColumn = "<td id='imp_import' class='text-center'><input id='import_" + uid + "' type='checkbox' /></td>";
         tblColumn += "<td id='imp_exists' class='text-center'><input id='exists_" + uid + "' type='radio' disabled readOnly /></td>";
-        tblColumn += "<td id='imp_summary'>"+summary+"</td>";
-        tblColumn += "<td id='imp_dtstart' class='text-center'>"+ new Date(dtstart).toLocaleString()+"</td>";
-        tblColumn += "<td id='imp_dtend' class='text-center'>"+ new Date(dtend).toLocaleString()+"</td>";
-        tblColumn += "<td id='imp_description'>"+description+"</td>";
+        tblColumn += "<td id='imp_summary'><span id='span_summary' >"+summary+"</span></td>";
+        tblColumn += "<td id='imp_dtstart' class='text-center'><span id='span_dtstart'>"+
+            new Date(dtstart).toLocaleString()+"</span></td>";
+        tblColumn += "<td id='imp_dtend' class='text-center'><span id='span_dtend'>"+
+            new Date(dtend).toLocaleString()+"</span></td>";
+        tblColumn += "<td id='imp_description'><span id='lbl_description'>"+description+"</span></td>";
+
         //Hidden TDs
         tblColumn += "<td id='imp_data_uid' style='display: none;'>" + uid +"</td>";
         tblColumn += "<td id='imp_data_category' style='display: none;'>" + chosenCategory +"</td>";
