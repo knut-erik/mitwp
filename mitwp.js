@@ -43,6 +43,7 @@ function saveImports(){
         var rowdtEnd = $("#imp_dtend_utc_"+rowUid).text();
         var rowUTCTZOffset = $("#imp_utctzoffset_"+rowUid).text();
         var postID = $("#imp_wpid_"+rowUid).text();
+        var wpUserID = $("#wp_user_id").text();
 
         var post_data = {
             uid: rowUid,
@@ -53,6 +54,7 @@ function saveImports(){
             event_summary : rowSummary,
             utctzoffset : rowUTCTZOffset,
             post_id : postID,
+            user_id : wpUserID,
             exists : existsOrNot
         };
 

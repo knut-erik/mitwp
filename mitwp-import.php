@@ -41,9 +41,10 @@ function renderHTML() {
        <div class="container-fluid">
 
             <div class="alert alert-success">
-                <strong>HOME URL : <?php echo get_home_url() ?></strong>
+                <strong>HOME URL : <?php echo get_home_url() ?>&nbsp;-&nbsp;USER:&nbsp;<?php echo wp_get_current_user()->display_name ?></strong>
             </div>
            <div id="home_url" style="display: none;"><?php echo get_home_url() ?></div>
+           <div id="wp_user_id" style="display: none;"><?php echo get_current_user_id() ?></div>
 
 
            <!-- ROW -->
