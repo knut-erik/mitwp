@@ -15,7 +15,7 @@ function optionsHTML() {
     -->
     <!-- One Form -->
     <form role="form" method="post" action="admin.php?page=mitwp-options">
-
+        <h2>DO NOT USE</h2>
     </form>
 
 
