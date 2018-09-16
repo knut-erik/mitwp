@@ -1,9 +1,9 @@
 
 function log_info(info){
 
-    var textArea = $("#log");
-    var logText = textArea.val();
-    var nowstr = '[' + new Date().toLocaleString() + ']';
+    let textArea = $("#log");
+    let logText = textArea.val();
+    let nowstr = '[' + new Date().toLocaleString() + ']';
 
     logText += '\r\n' + nowstr + '[ ' + info + ' ]';
     textArea.val(logText);
@@ -13,7 +13,7 @@ function log_info(info){
 function getiCalFromUrl(urlUID, category){
 
     //Get URL to Labora's UID getter and add parameters
-    var laboraUrl = $("#labora_url").text();
+    let laboraUrl = $("#labora_url").text();
     laboraUrl += urlUID;
     laboraUrl += $("#labora_url_params").text();
 
@@ -26,6 +26,7 @@ function getiCalFromUrl(urlUID, category){
 
     //update table with data
     jQuery.get(laboraUrl, function(data, status){
+        log_info('Status from labora iCal URL => ' + status);
         updateTable(data, category);
     });
 
@@ -33,33 +34,33 @@ function getiCalFromUrl(urlUID, category){
 
 function saveImports(){
 
-    var homeUrl = $("#home_url").text();
+    let homeUrl = $("#home_url").text();
     postUrl = homeUrl + "/wp-json/tm/v1/uid/";
 
     //run through each row - Slice will select form 0 to the end.
-    var rows = $("tbody#imp_table_body tr").slice(0);
+    let rows = $("tbody#imp_table_body tr").slice(0);
 
 
     //TODO: Must not insert when shit is already there
 
     //console.log(rows);
-    for(var i=0; i<rows.length;i++){
+    for(let i=0; i<rows.length;i++){
 
         //Slice to get the uid
         rowUid = rows[i]['id'].slice(4);
 
-        var importOrNot = $("#import_"+rowUid).is(':checked');
-        var existsOrNot = $("#exists_"+rowUid).is(':checked');
-        var rowSummary = $("#imp_summary_"+rowUid+ " span").text();
-        var rowCategory = $("#imp_data_category_"+rowUid+ " span").text();
-        var rowDescription = $("#imp_description_"+rowUid+ " span").html();
-        var rowdtStart = $("#imp_dtstart_utc_"+rowUid).text();
-        var rowdtEnd = $("#imp_dtend_utc_"+rowUid).text();
-        var rowUTCTZOffset = $("#imp_utctzoffset_"+rowUid).text();
-        var postID = $("#imp_wpid_"+rowUid).text();
-        var wpUserID = $("#wp_user_id").text();
+        let importOrNot = $("#import_"+rowUid).is(':checked');
+        let existsOrNot = $("#exists_"+rowUid).is(':checked');
+        let rowSummary = $("#imp_summary_"+rowUid+ " span").text();
+        let rowCategory = $("#imp_data_category_"+rowUid+ " span").text();
+        let rowDescription = $("#imp_description_"+rowUid+ " span").html();
+        let rowdtStart = $("#imp_dtstart_utc_"+rowUid).text();
+        let rowdtEnd = $("#imp_dtend_utc_"+rowUid).text();
+        let rowUTCTZOffset = $("#imp_utctzoffset_"+rowUid).text();
+        let postID = $("#imp_wpid_"+rowUid).text();
+        let wpUserID = $("#wp_user_id").text();
 
-        var post_data = {
+        let post_data = {
             uid: rowUid,
             category: rowCategory,
             dtstart : rowdtStart,
@@ -92,14 +93,14 @@ function saveImports(){
 function updateTable(data, category){
 
     log_info('UPDATING TABLE');
-    var $place_holder = $("tbody#imp_table_body");
+    let $place_holder = $("tbody#imp_table_body");
 
     //Clear the table body
     $("tbody#imp_table_body").empty();
 
-    var result = getICalTable(data, category);
-    var uids = result[0];
-    var tableDOM = $.parseHTML(result[1]);
+    let result = getICalTable(data, category);
+    let uids = result[0];
+    let tableDOM = $.parseHTML(result[1]);
 
     //Append the new DOM - table content
     $place_holder.append(tableDOM);
@@ -111,21 +112,45 @@ function getICalTable(data, category){
 
     //Get the iCal Data
     //TODO: Sort by date - howto?
-    var jcalData = ICAL.parse(data);
-    var vcalendar = new ICAL.Component(jcalData);
-    var allSubComponents = vcalendar.getAllSubcomponents('vevent');
-    var tblHTML = "";
-    //var chosenCategory = $("#chosen option:selected").attr('id');
+    let jcalData = ICAL.parse(data);
+    let vcalendar = new ICAL.Component(jcalData);
+    let allSubComponents = vcalendar.getAllSubcomponents('vevent');
 
-    var uids = [];
+    //Sort events
+    //Sorting by using DTSTART time (parsing)
+    //TODO: Jikes ... this is fragile
+    allSubComponents.sort(
+        function(a,b){
+
+            //convert to string
+            let eventa = a.toString();
+            let eventb = b.toString();
+
+            //DTSTART;TZID=W. Europe Standard Time:20181005T180000
+            //LOCATION
+            let toindex = eventa.indexOf(":", eventa.indexOf("DTSTART;"));
+            let firstDateAsNumber = eventa.substring(toindex+1,toindex+9);
+
+            toindex = eventb.indexOf(":", eventb.indexOf("DTSTART;"));
+            let secondDateAsNumber = eventb.substring(toindex+1,toindex+9);
+
+            console.log('first er ' + firstDateAsNumber);
+            console.log('second er ' + secondDateAsNumber);
+
+            return (firstDateAsNumber>secondDateAsNumber);
+        }
+    );
+
+    let tblHTML = "";
+    let uids = [];
 
     //Loop through subcomponents
-    for (var i=0; i<allSubComponents.length; i++) {
-        var summary = allSubComponents[i].getFirstPropertyValue('summary');
-        var description = allSubComponents[i].getFirstPropertyValue('description');
-        var dtstart = allSubComponents[i].getFirstPropertyValue('dtstart');
-        var dtend = allSubComponents[i].getFirstPropertyValue('dtend');
-        var uid = allSubComponents[i].getFirstPropertyValue('uid');
+    for (let i=0; i<allSubComponents.length; i++) {
+        let summary = allSubComponents[i].getFirstPropertyValue('summary');
+        let description = allSubComponents[i].getFirstPropertyValue('description');
+        let dtstart = allSubComponents[i].getFirstPropertyValue('dtstart');
+        let dtend = allSubComponents[i].getFirstPropertyValue('dtend');
+        let uid = allSubComponents[i].getFirstPropertyValue('uid');
 
         //Empty strings instead of null
         if( description == null){
@@ -137,8 +162,8 @@ function getICalTable(data, category){
 
         uids.push(uid);
 
-        var oneRow = "<tr id='row_" + uid + "' >";
-        var tblColumn = "<td id='imp_import' class='text-center'><input id='import_" + uid + "' type='checkbox' /></td>";
+        let oneRow = "<tr id='row_" + uid + "' >";
+        let tblColumn = "<td id='imp_import' class='text-center'><input id='import_" + uid + "' type='checkbox' /></td>";
         tblColumn += "<td id='imp_exists' class='text-center'><input id='exists_" + uid + "' type='radio' disabled readOnly /></td>";
         tblColumn += "<td id='imp_summary_"+uid +"'><span>"+summary+"</span></td>";
         tblColumn += "<td id='imp_dtstart_"+uid +"' class='text-center'><span>"+new Date(dtstart).toLocaleString()+"</span></td>";
@@ -162,16 +187,16 @@ function getICalTable(data, category){
 
 function setExistingCheckbox(lUids, category){
 
-    var homeUrl = $("#home_url").text();
+    let homeUrl = $("#home_url").text();
     homeUrl += "/wp-json/tm/v1/uid/";
 
-    for(var i=0;i < lUids.length;i++){
-            var restapi = homeUrl + "?id=" + lUids[i] +"&category=" + category;
+    for(let i=0;i < lUids.length;i++){
+            let restapi = homeUrl + "?id=" + lUids[i] +"&category=" + category;
 
             //Call the REST API
             jQuery.get(restapi, function(data, status){
 
-                var chkExists = false;
+                let chkExists = false;
                 if( parseInt(data[0].found) == 1){
                         chkExists = true;
                         $('#row_' + data[0].uid ).prop('class', 'success');
