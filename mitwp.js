@@ -133,10 +133,7 @@ function getICalTable(data, category){
 
             toindex = eventb.indexOf(":", eventb.indexOf("DTSTART;"));
             let secondDateAsNumber = eventb.substring(toindex+1,toindex+9);
-
-            console.log('first er ' + firstDateAsNumber);
-            console.log('second er ' + secondDateAsNumber);
-
+            
             return (firstDateAsNumber>secondDateAsNumber);
         }
     );
