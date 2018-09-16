@@ -6,6 +6,8 @@ function log_info(info){
 
     logText += '\r\n' + nowstr + '[ ' + info + ' ]';
     $("#log").val(logText);
+
+
     //console.log(logText);
 }
 
@@ -126,6 +128,14 @@ function getICalTable(data, category){
         var dtstart = allSubComponents[i].getFirstPropertyValue('dtstart');
         var dtend = allSubComponents[i].getFirstPropertyValue('dtend');
         var uid = allSubComponents[i].getFirstPropertyValue('uid');
+
+        //Empty strings instead of null
+        if( description == null){
+            description = "";
+        }
+        if( summary == null){
+            summary = "";
+        }
 
         uids.push(uid);
 

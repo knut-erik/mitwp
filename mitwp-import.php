@@ -50,7 +50,7 @@ function renderHTML() {
            <div class="col-md-12">
            <div class="form-group">
                <label for="comment">LOG:</label>
-               <textarea readonly class="form-control" rows="10" id="log"></textarea>
+               <textarea readonly class="form-control" rows="5" id="log"></textarea>
            </div>
            </div>
        </div>
