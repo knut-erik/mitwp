@@ -1,20 +1,21 @@
 
 function log_info(info){
 
-    var logText = $("#log").val();
+    var textArea = $("#log");
+    var logText = textArea.val();
     var nowstr = '[' + new Date().toLocaleString() + ']';
 
     logText += '\r\n' + nowstr + '[ ' + info + ' ]';
-    $("#log").val(logText);
-
+    textArea.val(logText);
+    textArea.scrollTop(textArea[0].scrollHeight);
 }
 
 function getiCalFromUrl(urlUID, category){
 
-    //TODO: Make this dissapear - use settings for the plugin
-    laboraUrl = "https://wsu4.mylabora.com/churchhubrelease/icalhandler.ashx?iCal=";
+    //Get URL to Labora's UID getter and add parameters
+    var laboraUrl = $("#labora_url").text();
     laboraUrl += urlUID;
-    laboraUrl += "&M=12&pub=true&pubtext=default";
+    laboraUrl += $("#labora_url_params").text();
 
     log_info('Get iCal from URL ' + laboraUrl);
 

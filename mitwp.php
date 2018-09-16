@@ -1,14 +1,11 @@
 <?php
 /*
 Plugin Name: mitwp
-Plugin URI: http://about:none/
 Description: Plugin which imports iCal events to WP Events
-Version: 0.1
+Version: 1.0
 Author: Knut Erik Hollund
-Author URI: http://about:none/
 License: GPLv3
 */
-
 
 
 //Define constants used
@@ -40,10 +37,6 @@ define('TABAGO_BTN_TXT', 'Tabago');
 
 define('KONFIRMANT_ICAL_UID', '06cc98dc-393f-42e7-9046-a5ce0130ef70');
 define('KONFIRMANT_BTN_TXT', 'Konfirmant');
-
-define('EVENT_MAP_LOCATION', 'Tananger kirke, Sola, Norway');
-define('EVENT_LOCATION_GPS', '58.93535599999999, 5.600313000000028');
-
 
 
 //Require once to load the php code, else it would not be found

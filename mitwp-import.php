@@ -1,6 +1,5 @@
 <?php
 
-
 /*
  * renderHTML - Render the plugin page for handling import of iCal
  */
@@ -8,6 +7,9 @@ function renderHTML() {
 
     if ( !current_user_can('import') )
         wp_die(__('You do not have sufficient permissions of this site.'));
+
+    //TODO: Change before prod
+    define( 'WP_DEBUG', false);
 
     /* Bootstrap */
     //Styles and scripts (Bootstrap)
@@ -33,8 +35,6 @@ function renderHTML() {
     wp_register_style( 'mitwp_css',  plugin_dir_url(__FILE__) . 'mitwp.css' );
     wp_enqueue_style( 'mitwp_css');
 
-    //TODO: Change before prod
-    define( 'WP_DEBUG', true);
 
     ?>
 
@@ -47,6 +47,9 @@ function renderHTML() {
             </div>
            <div id="home_url" style="display: none;"><?php echo get_home_url() ?></div>
            <div id="wp_user_id" style="display: none;"><?php echo get_current_user_id() ?></div>
+           <div id="labora_url" style="display: none;"><?php echo constant('LABORA_URL'); ?></div>
+           <div id="labora_url_params" style="display: none;"><?php echo constant('LABORA_URL_PARAMS'); ?></div>
+
 
        <div class="row">
            <div class="col-md-12">
