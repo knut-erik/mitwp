@@ -46,8 +46,16 @@ function renderHTML() {
            <div id="home_url" style="display: none;"><?php echo get_home_url() ?></div>
            <div id="wp_user_id" style="display: none;"><?php echo get_current_user_id() ?></div>
 
+       <div class="row">
+           <div class="col-md-12">
+           <div class="form-group">
+               <label for="comment">LOG:</label>
+               <textarea readonly class="form-control" rows="10" id="log"></textarea>
+           </div>
+           </div>
+       </div>
 
-           <!-- ROW -->
+       <!-- ROW -->
         <div class="row">
             <!-- LEFT COLUMN -->
             <div class="col-md-2">

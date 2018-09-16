@@ -1,14 +1,28 @@
 
+function log_info(info){
+
+    var logText = $("#log").val();
+    var nowstr = '[' + new Date().toLocaleString() + ']';
+
+    logText += '\r\n' + nowstr + '[ ' + info + ' ]';
+    $("#log").val(logText);
+    //console.log(logText);
+}
 
 function getiCalFromUrl(urlUID, category){
+
 
     //TODO: Make this dissapear - use settings for the plugin
     laboraUrl = "https://wsu4.mylabora.com/churchhubrelease/icalhandler.ashx?iCal=";
     laboraUrl += urlUID;
     laboraUrl += "&M=12&pub=true&pubtext=default";
 
+    log_info('Get iCal from URL ' + laboraUrl);
+
     //lowercase the category to fit
     category = category.toLowerCase();
+    log_info('Category : ' + category);
+
 
     //update table with data
     jQuery.get(laboraUrl, function(data, status){
@@ -60,11 +74,16 @@ function saveImports(){
 
 
         if(importOrNot){
+            log_info('IMPORTING : ' + post_data.event_summary+' - ' + new Date(post_data.dtstart).toLocaleString() +' - ' + new Date(post_data.dtend).toLocaleString());
             //Fire off a post (REST API) insert/update data
-                    jQuery.post(postUrl, post_data, function(data, status){
-                          //Whatever
-                        //console.log(data);
-                    },'json');
+            jQuery.post(postUrl, post_data, function(data, status){
+                 //Whatever
+                //console.log(data);
+
+                data = JSON.stringify(data);
+                data = JSON.parse(data);
+                setExistingCheckbox( Array(data[0].uid), data[0].category);
+            },'json');
         }
     }//End loop
 }
@@ -72,6 +91,7 @@ function saveImports(){
 
 function updateTable(data, category){
 
+    log_info('UPDATING TABLE');
     var $place_holder = $("tbody#imp_table_body");
 
     //Clear the table body
@@ -90,6 +110,7 @@ function updateTable(data, category){
 function getICalTable(data, category){
 
     //Get the iCal Data
+    //TODO: Sort by date - howto?
     var jcalData = ICAL.parse(data);
     var vcalendar = new ICAL.Component(jcalData);
     var allSubComponents = vcalendar.getAllSubcomponents('vevent');
