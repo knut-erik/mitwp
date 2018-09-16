@@ -7,12 +7,9 @@ function log_info(info){
     logText += '\r\n' + nowstr + '[ ' + info + ' ]';
     $("#log").val(logText);
 
-
-    //console.log(logText);
 }
 
 function getiCalFromUrl(urlUID, category){
-
 
     //TODO: Make this dissapear - use settings for the plugin
     laboraUrl = "https://wsu4.mylabora.com/churchhubrelease/icalhandler.ashx?iCal=";

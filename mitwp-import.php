@@ -33,6 +33,8 @@ function renderHTML() {
     wp_register_style( 'mitwp_css',  plugin_dir_url(__FILE__) . 'mitwp.css' );
     wp_enqueue_style( 'mitwp_css');
 
+    //TODO: Change before prod
+    define( 'WP_DEBUG', true);
 
     ?>
 
