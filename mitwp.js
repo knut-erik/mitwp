@@ -17,16 +17,16 @@ function getiCalFromUrl(urlUID, category){
     laboraUrl += urlUID;
     laboraUrl += $("#labora_url_params").text();
 
-    log_info('Get iCal from URL ' + laboraUrl);
+    log_info('Get iCal from URL : ' + laboraUrl);
 
     //lowercase the category to fit
     category = category.toLowerCase();
-    log_info('Category : ' + category);
+    log_info('Retrieving category : ' + category);
 
 
     //update table with data
     jQuery.get(laboraUrl, function(data, status){
-        log_info('Status from labora iCal URL => ' + status);
+        log_info('HTTP Response from labora iCal URL => ' + status);
         updateTable(data, category);
     });
 
@@ -75,7 +75,7 @@ function saveImports(){
 
 
         if(importOrNot){
-            log_info('IMPORTING : ' + post_data.event_summary+' - ' + new Date(post_data.dtstart).toLocaleString() +' - ' + new Date(post_data.dtend).toLocaleString());
+            log_info('IMPORTING TO WP : ' + post_data.event_summary+' - ' + new Date(post_data.dtstart).toLocaleString() +' - ' + new Date(post_data.dtend).toLocaleString());
             //Fire off a post (REST API) insert/update data
             jQuery.post(postUrl, post_data, function(data, status){
                  //Whatever
@@ -83,6 +83,8 @@ function saveImports(){
 
                 data = JSON.stringify(data);
                 data = JSON.parse(data);
+
+                //TODO: Must be a better way - a bit hardcoded. Look at the data the API produces
                 setExistingCheckbox( Array(data[0].uid), data[0].category);
             },'json');
         }
@@ -92,7 +94,7 @@ function saveImports(){
 
 function updateTable(data, category){
 
-    log_info('UPDATING TABLE');
+    log_info('Updating table with Category => ' + category);
     let $place_holder = $("tbody#imp_table_body");
 
     //Clear the table body
@@ -187,6 +189,7 @@ function setExistingCheckbox(lUids, category){
     let homeUrl = $("#home_url").text();
     homeUrl += "/wp-json/tm/v1/uid/";
 
+    log_info('Check if posts exists in WP - if so mark the rows');
     for(let i=0;i < lUids.length;i++){
             let restapi = homeUrl + "?id=" + lUids[i] +"&category=" + category;
 
