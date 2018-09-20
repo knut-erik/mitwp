@@ -1,16 +1,25 @@
+//Import jquery TS
+import * as jQuery from 'jquery';
+//TODO: Get ICAL as a module for TypeScript
+let ICAL : any;
 
-function log_info(info){
+function log_info(info : string){
 
-    let textArea = $("#log");
+    let textArea = $("#log");    
     let logText = textArea.val();
     let nowstr = '[' + new Date().toLocaleString() + ']';
 
     logText += '\r\n' + nowstr + '[ ' + info + ' ]';
-    textArea.val(logText);
+    if (logText) {textArea.val(logText);}
     textArea.scrollTop(textArea[0].scrollHeight);
 }
 
-function getiCalFromUrl(urlUID, category){
+function disableButton(buttonID : string, disabled : boolean) {
+
+    $("#" + buttonID).prop('disabled', disabled);
+}
+
+function getiCalFromUrl(urlUID : string, category : string){
 
     //Get URL to Labora's UID getter and add parameters
     let laboraUrl = $("#labora_url").text();
@@ -23,11 +32,15 @@ function getiCalFromUrl(urlUID, category){
     category = category.toLowerCase();
     log_info('Retrieving category : ' + category);
 
+    disableButton("btn_choose_category",true);
+    disableButton("btn_import",true);
 
     //update table with data
-    jQuery.get(laboraUrl, function(data, status){
+    jQuery.get(laboraUrl, function(iCalAsString : string, status : string){
         log_info('HTTP Response from labora iCal URL => ' + status);
-        updateTable(data, category);
+        updateTable(iCalAsString, category);
+        disableButton("btn_choose_category",false);
+        disableButton("btn_import",false);
     });
 
 }
@@ -35,19 +48,17 @@ function getiCalFromUrl(urlUID, category){
 function saveImports(){
 
     let homeUrl = $("#home_url").text();
-    postUrl = homeUrl + "/wp-json/tm/v1/uid/";
+    let postUrl = homeUrl + "/wp-json/tm/v1/uid/";
 
     //run through each row - Slice will select form 0 to the end.
-    let rows = $("tbody#imp_table_body tr").slice(0);
-
-
+    let rows = $("tbody#imp_table_body tr").slice(0);    
+    
     //TODO: Must not insert when shit is already there
-
     //console.log(rows);
     for(let i=0; i<rows.length;i++){
 
         //Slice to get the uid
-        rowUid = rows[i]['id'].slice(4);
+        let rowUid = rows[i]['id'].slice(4);
 
         let importOrNot = $("#import_"+rowUid).is(':checked');
         let existsOrNot = $("#exists_"+rowUid).is(':checked');
@@ -75,24 +86,31 @@ function saveImports(){
 
 
         if(importOrNot){
-            log_info('IMPORTING TO WP : ' + post_data.event_summary+' - ' + new Date(post_data.dtstart).toLocaleString() +' - ' + new Date(post_data.dtend).toLocaleString());
+            log_info('IMPORTING TO WP : ' + post_data.event_summary+' - ' 
+                + new Date(post_data.dtstart).toLocaleString() +' - ' 
+                + new Date(post_data.dtend).toLocaleString());
+
             //Fire off a post (REST API) insert/update data
             jQuery.post(postUrl, post_data, function(data, status){
-                 //Whatever
-                //console.log(data);
-
+                //Disable buttons
+                disableButton("btn_choose_category",true);
+                disableButton("btn_import",true);
+                 
+                //Whatever
                 data = JSON.stringify(data);
                 data = JSON.parse(data);
 
                 //TODO: Must be a better way - a bit hardcoded. Look at the data the API produces
                 setExistingCheckbox( Array(data[0].uid), data[0].category);
+                disableButton("btn_choose_category",false);
+                disableButton("btn_import",false);
             },'json');
         }
     }//End loop
 }
 
 
-function updateTable(data, category){
+function updateTable(data : string, category : string){
 
     log_info('Updating table with Category => ' + category);
     let $place_holder = $("tbody#imp_table_body");
@@ -110,19 +128,21 @@ function updateTable(data, category){
     setExistingCheckbox(uids, category);
 }
 
-function getICalTable(data, category){
+function getICalTable(iCalAsString : string, category : string): [string[], string] {
+
+    disableButton("btn_choose_category",true);
+    disableButton("btn_import",true);
 
     //Get the iCal Data
-    //TODO: Sort by date - howto?
-    let jcalData = ICAL.parse(data);
-    let vcalendar = new ICAL.Component(jcalData);
+    let jcalData = ICAL.parse(iCalAsString);
+    let vcalendar = new ICAL.Component(jcalData);    
     let allSubComponents = vcalendar.getAllSubcomponents('vevent');
 
     //Sort events
     //Sorting by using DTSTART time (parsing)
-    //TODO: Jikes ... this is fragile
+    //FIXME: Jikes ... this is fragile
     allSubComponents.sort(
-        function(a,b){
+        function(a : Object [] ,b : Object []){
 
             //convert to string
             let eventa = a.toString();
@@ -141,7 +161,7 @@ function getICalTable(data, category){
     );
 
     let tblHTML = "";
-    let uids = [];
+    let uids : any = [];  //TODO: FORDI JEG IKKE HAR ICAL DEFENISJONEN
 
     //Loop through subcomponents
     for (let i=0; i<allSubComponents.length; i++) {
@@ -151,6 +171,9 @@ function getICalTable(data, category){
         let dtend = allSubComponents[i].getFirstPropertyValue('dtend');
         let uid = allSubComponents[i].getFirstPropertyValue('uid');
 
+        //TODO: Noen annen måte?
+        uids.push(uid);
+
         //Empty strings instead of null
         if( description == null){
             description = "";
@@ -158,9 +181,7 @@ function getICalTable(data, category){
         if( summary == null){
             summary = "";
         }
-
-        uids.push(uid);
-
+    
         let oneRow = "<tr id='row_" + uid + "' >";
         let tblColumn = "<td id='imp_import' class='text-center'><input id='import_" + uid + "' type='checkbox' /></td>";
         tblColumn += "<td id='imp_exists' class='text-center'><input id='exists_" + uid + "' type='radio' disabled readOnly /></td>";
@@ -181,13 +202,19 @@ function getICalTable(data, category){
         tblHTML += oneRow  +"</tr>";
     }
 
+    disableButton("btn_choose_category",false);
+    disableButton("btn_import",false);
+
     return [uids,tblHTML];
 }
 
-function setExistingCheckbox(lUids, category){
+function setExistingCheckbox(lUids : string[], category : string){
 
     let homeUrl = $("#home_url").text();
     homeUrl += "/wp-json/tm/v1/uid/";
+
+    disableButton("btn_choose_category",true);
+    disableButton("btn_import",true);
 
     log_info('Check if posts exists in WP - if so mark the rows');
     for(let i=0;i < lUids.length;i++){
@@ -196,6 +223,9 @@ function setExistingCheckbox(lUids, category){
             //Call the REST API
             jQuery.get(restapi, function(data, status){
 
+                disableButton("btn_choose_category",true);
+                disableButton("btn_import",true);        
+    
                 let chkExists = false;
                 if( parseInt(data[0].found) == 1){
                         chkExists = true;
@@ -205,6 +235,9 @@ function setExistingCheckbox(lUids, category){
                 }
             $('#exists_' + data[0].uid ).prop('checked', chkExists);
             $('#import_' + data[0].uid ).prop('checked', !chkExists); //Enable import because it doesn't exist
+
+            disableButton("btn_choose_category",false);
+            disableButton("btn_import",false);
         });
     }
 

@@ -26,13 +26,13 @@ function renderHTML() {
 
 
     //Register and enque javascript file
-    wp_register_script( 'mitwp_js', plugin_dir_url(__FILE__) . 'mitwp.js');
-    wp_enqueue_script('mitwp_js', plugin_dir_url(__FILE__) . 'mitwp.js');
+    wp_register_script( 'mitwp_js', plugin_dir_url(__FILE__) . '/ts/mitwp.js');
+    wp_enqueue_script('mitwp_js', plugin_dir_url(__FILE__) . '/ts/mitwp.js');
 
-    wp_register_script('ical_js', plugin_dir_url(__FILE__) . 'ical.min.js');
-    wp_enqueue_script('ical_js', plugin_dir_url(__FILE__) . 'ical.min.js');
+    wp_register_script('ical_js', plugin_dir_url(__FILE__) . '/js/ical.min.js');
+    wp_enqueue_script('ical_js', plugin_dir_url(__FILE__) . '/js/ical.min.js');
 
-    wp_register_style( 'mitwp_css',  plugin_dir_url(__FILE__) . 'mitwp.css' );
+    wp_register_style( 'mitwp_css',  plugin_dir_url(__FILE__) . '/css/mitwp.css' );
     wp_enqueue_style( 'mitwp_css');
 
 
@@ -65,7 +65,7 @@ function renderHTML() {
             <!-- LEFT COLUMN -->
             <div class="col-md-2">
                             <div class="dropdown">
-                                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Velg gruppe for import&nbsp;&nbsp;<span class="caret"></span></button>
+                                <button id="btn_choose_category" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Velg gruppe for import&nbsp;&nbsp;<span class="caret"></span></button>
                                 <ul class="dropdown-menu">
                                     <li><a href="javascript:getiCalFromUrl('<?php echo constant('GUDSTJENESTE_ICAL_UID'); ?>'
                                     , '<?php echo constant('GUDSTJENESTE_BTN_TXT'); ?>')"><?php echo constant('GUDSTJENESTE_BTN_TXT'); ?></a></li>
@@ -94,7 +94,7 @@ function renderHTML() {
                             </div><!-- dropdown -->
             </div> <!-- COLUMN END -->
             <div class="col-md-10">
-                <button type="button" id="start-save-btn" name="start-save-btn" class="btn btn-danger" onclick="saveImports()">Importer iCal Data</button>
+                <button type="button" id="btn_import" name="btn-start-import" class="btn btn-danger" onclick="saveImports()">Importer iCal Data</button>
             </div><!-- COLUMN END -->
         </div><!-- ROW END -->
         <p>&nbsp;</p>
