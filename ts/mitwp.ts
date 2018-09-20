@@ -3,6 +3,11 @@ import * as jQuery from 'jquery';
 //TODO: Get ICAL as a module for TypeScript
 let ICAL : any;
 
+/**
+ * Disable a button with the corresponding buttonID.
+ * 
+ * @param {string} [info] - Text which should be logged to the <div id='log'>
+ */
 function log_info(info : string){
 
     let textArea = $("#log");    
@@ -14,11 +19,23 @@ function log_info(info : string){
     textArea.scrollTop(textArea[0].scrollHeight);
 }
 
-function disableButton(buttonID : string, disabled : boolean) {
+/**
+ * Disable a button with the corresponding buttonID.
+ * 
+ * @param {string} [buttonID] - ID of button to disable
+ * @param {boolean} [disable] - Disable the button?
+ */
+function disableButton(buttonID : string, disable : boolean) {
 
-    $("#" + buttonID).prop('disabled', disabled);
+    $("#" + buttonID).prop('disabled', disable);
 }
 
+/**
+ * Use Labora's UID for retreiving iCal file.
+ * 
+ * @param {string} [urlUID] - UID from Labora.
+ * @param {string} [category] - Category in Labora which is retrieved.
+ */
 function getiCalFromUrl(urlUID : string, category : string){
 
     //Get URL to Labora's UID getter and add parameters
@@ -45,6 +62,9 @@ function getiCalFromUrl(urlUID : string, category : string){
 
 }
 
+/**
+ * Save all marked rows for import.
+ */
 function saveImports(){
 
     let homeUrl = $("#home_url").text();
@@ -109,8 +129,14 @@ function saveImports(){
     }//End loop
 }
 
-
-function updateTable(data : string, category : string){
+/**
+ * Update the HTML table with new data.
+ * Clear table first (.empty()) and fill up.
+ * 
+ * @param {string} [iCalAsString] - iCal file retreived from labora.
+ * @param {string} [category] - Category of retrieved iCal.
+ */
+function updateTable(iCalAsString : string, category : string){
 
     log_info('Updating table with Category => ' + category);
     let $place_holder = $("tbody#imp_table_body");
@@ -118,7 +144,7 @@ function updateTable(data : string, category : string){
     //Clear the table body
     $("tbody#imp_table_body").empty();
 
-    let result = getICalTable(data, category);
+    let result = getICalTable(iCalAsString, category);
     let uids = result[0];
     let tableDOM = $.parseHTML(result[1]);
 
@@ -128,6 +154,14 @@ function updateTable(data : string, category : string){
     setExistingCheckbox(uids, category);
 }
 
+
+/**
+ * Returns a HTML table with data from iCal file. 
+ * 
+ * @param {string} [iCalAsString] - iCal file retreived from labora.
+ * @param {string} [category] - Category of retrieved iCal.
+ * @returns {string[string[],string]} - Returns an array consist of arrays of UIDs and the HTML code.
+ */
 function getICalTable(iCalAsString : string, category : string): [string[], string] {
 
     disableButton("btn_choose_category",true);
@@ -208,7 +242,13 @@ function getICalTable(iCalAsString : string, category : string): [string[], stri
     return [uids,tblHTML];
 }
 
-function setExistingCheckbox(lUids : string[], category : string){
+/**
+ * Set checkboxes to marked if the rows exists in Wordpress as a post of type Event.
+ * 
+ * @param {string[]} [uids] - Array of strings which holds the UIDs from the iCal.
+ * @param {string} [category] - Category of retrieved iCal.
+ */
+function setExistingCheckbox(uids : string[], category : string){
 
     let homeUrl = $("#home_url").text();
     homeUrl += "/wp-json/tm/v1/uid/";
@@ -217,8 +257,8 @@ function setExistingCheckbox(lUids : string[], category : string){
     disableButton("btn_import",true);
 
     log_info('Check if posts exists in WP - if so mark the rows');
-    for(let i=0;i < lUids.length;i++){
-            let restapi = homeUrl + "?id=" + lUids[i] +"&category=" + category;
+    for(let i=0;i < uids.length;i++){
+            let restapi = homeUrl + "?id=" + uids[i] +"&category=" + category;
 
             //Call the REST API
             jQuery.get(restapi, function(data, status){

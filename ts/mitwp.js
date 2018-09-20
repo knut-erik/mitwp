@@ -19,8 +19,8 @@ function log_info(info) {
     }
     textArea.scrollTop(textArea[0].scrollHeight);
 }
-function disableButton(buttonID, disabled) {
-    $("#" + buttonID).prop('disabled', disabled);
+function disableButton(buttonID, disable) {
+    $("#" + buttonID).prop('disabled', disable);
 }
 function getiCalFromUrl(urlUID, category) {
     var laboraUrl = $("#labora_url").text();
@@ -82,11 +82,11 @@ function saveImports() {
         }
     }
 }
-function updateTable(data, category) {
+function updateTable(iCalAsString, category) {
     log_info('Updating table with Category => ' + category);
     var $place_holder = $("tbody#imp_table_body");
     $("tbody#imp_table_body").empty();
-    var result = getICalTable(data, category);
+    var result = getICalTable(iCalAsString, category);
     var uids = result[0];
     var tableDOM = $.parseHTML(result[1]);
     $place_holder.append(tableDOM);
@@ -142,14 +142,14 @@ function getICalTable(iCalAsString, category) {
     disableButton("btn_import", false);
     return [uids, tblHTML];
 }
-function setExistingCheckbox(lUids, category) {
+function setExistingCheckbox(uids, category) {
     var homeUrl = $("#home_url").text();
     homeUrl += "/wp-json/tm/v1/uid/";
     disableButton("btn_choose_category", true);
     disableButton("btn_import", true);
     log_info('Check if posts exists in WP - if so mark the rows');
-    for (var i = 0; i < lUids.length; i++) {
-        var restapi = homeUrl + "?id=" + lUids[i] + "&category=" + category;
+    for (var i = 0; i < uids.length; i++) {
+        var restapi = homeUrl + "?id=" + uids[i] + "&category=" + category;
         jQuery.get(restapi, function (data, status) {
             disableButton("btn_choose_category", true);
             disableButton("btn_import", true);
