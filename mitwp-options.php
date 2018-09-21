@@ -22,6 +22,7 @@ function optionsHTML() {
     wp_enqueue_script( 'medimp_jquery');
     wp_enqueue_script( 'medimp_bootstrap_js');
 
+
 ?>
     <!--
         TODO: Get categories from event in WP
@@ -39,7 +40,6 @@ function optionsHTML() {
 
 <?php
 
+} //optionsHTML
 
-
-} //End of optionsHTML
 ?>
