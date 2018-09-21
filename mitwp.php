@@ -51,6 +51,7 @@ register_activation_hook(__FILE__,'mitwp_install');
 /* Runs on plugin deactivation*/
 register_deactivation_hook( __FILE__, 'mitwp_remove' );
 
+
 function mitwp_install() {
     //TODO: Something to do here?
 }
