@@ -38,6 +38,29 @@ function getiCalFromUrl(urlUID, category) {
         disableButton("btn_import", false);
     });
 }
+function deleteFromWP(rowuid) {
+    var restapi = $("#home_url").text();
+    var postid = $("#imp_wpid_" + rowuid).text();
+    var category = $("#imp_data_category_" + rowuid + " span").text();
+    restapi += "/wp-json/tm/v1/deletepost/" + "?postid=" + postid + "&category=" + category;
+    $.ajax({
+        url: restapi,
+        type: 'DELETE',
+        success: function (result) {
+            var resultasstring = JSON.stringify(result);
+            var resultasjson = JSON.parse(resultasstring);
+            if (resultasjson.success = 'true') {
+                log_info('Post ' + resultasjson.postid + ' Deleted - ' + resultasjson.result);
+            }
+            else {
+                log_info('DELETE returned ' + resultasjson.success + ' for Post ' + resultasjson.postid);
+            }
+        },
+        error: function () {
+            log_info('ERROR - REST API did not receive success - post id => ' + postid);
+        }
+    });
+}
 function saveImports() {
     var homeUrl = $("#home_url").text();
     var postUrl = homeUrl + "/wp-json/tm/v1/uid/";
@@ -124,7 +147,8 @@ function getICalTable(iCalAsString, category) {
         }
         var oneRow = "<tr id='row_" + uid + "' >";
         var tblColumn = "<td id='imp_import' class='text-center'><input id='import_" + uid + "' type='checkbox' /></td>";
-        tblColumn += "<td id='imp_exists' class='text-center'><input id='exists_" + uid + "' type='radio' disabled readOnly /></td>";
+        tblColumn += "<td id='imp_exists' class='text-center'><input id='exists_" + uid + "' type='radio' disabled readOnly />";
+        tblColumn += "&nbsp;&nbsp;<button id='delete_wpid_" + uid + "' onclick='deleteFromWP(\"" + uid + "\")' class='btn btn-danger' disabled>Delete</td>";
         tblColumn += "<td id='imp_summary_" + uid + "'><span>" + summary + "</span></td>";
         tblColumn += "<td id='imp_dtstart_" + uid + "' class='text-center'><span>" + new Date(dtstart).toLocaleString() + "</span></td>";
         tblColumn += "<td id='imp_dtend' class='text-center'><span id='span_dtend'>" + new Date(dtend).toLocaleString() + "</span></td>";
@@ -160,6 +184,7 @@ function setExistingCheckbox(uids, category) {
                 $('#imp_wpid_' + data[0].uid).text(data[0].post_id);
             }
             $('#exists_' + data[0].uid).prop('checked', chkExists);
+            $('#delete_wpid_' + data[0].uid).prop('disabled', !chkExists);
             $('#import_' + data[0].uid).prop('checked', !chkExists);
             disableButton("btn_choose_category", false);
             disableButton("btn_import", false);

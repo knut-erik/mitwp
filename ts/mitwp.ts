@@ -62,6 +62,42 @@ function getiCalFromUrl(urlUID : string, category : string){
 
 }
 
+function deleteFromWP(rowuid : string){
+    
+    let restapi = $("#home_url").text();
+    let postid = $("#imp_wpid_"+rowuid).text();
+    let category = $("#imp_data_category_"+rowuid+ " span").text();
+
+    //log_info(postid);
+    restapi += "/wp-json/tm/v1/deletepost/" + "?postid=" + postid + "&category="+category;
+    
+    $.ajax({
+        url: restapi,
+        type: 'DELETE'        
+        ,
+        success: function(result) {
+            // Do something with the result
+            let resultasstring = JSON.stringify(result);
+            let resultasjson = JSON.parse(resultasstring);
+            if(resultasjson.success='true'){
+                log_info('Post ' + resultasjson.postid + ' Deleted - ' + resultasjson.result);
+            }else{
+                log_info('DELETE returned ' + resultasjson.success + ' for Post ' + resultasjson.postid);
+            }            
+        },
+        error: function() {
+            // Do something with the result
+            log_info('ERROR - REST API did not receive success - post id => ' + postid);
+        }
+
+    });
+    //delte post
+    //remove id form div tabg
+    //remove success
+    //disable delete button
+
+}
+
 /**
  * Save all marked rows for import.
  */
@@ -218,7 +254,10 @@ function getICalTable(iCalAsString : string, category : string): [string[], stri
     
         let oneRow = "<tr id='row_" + uid + "' >";
         let tblColumn = "<td id='imp_import' class='text-center'><input id='import_" + uid + "' type='checkbox' /></td>";
-        tblColumn += "<td id='imp_exists' class='text-center'><input id='exists_" + uid + "' type='radio' disabled readOnly /></td>";
+        
+        tblColumn += "<td id='imp_exists' class='text-center'><input id='exists_" + uid + "' type='radio' disabled readOnly />";
+        tblColumn += "&nbsp;&nbsp;<button id='delete_wpid_" + uid + "' onclick='deleteFromWP(\"" + uid + "\")' class='btn btn-danger' disabled>Delete</td>";
+
         tblColumn += "<td id='imp_summary_"+uid +"'><span>"+summary+"</span></td>";
         tblColumn += "<td id='imp_dtstart_"+uid +"' class='text-center'><span>"+new Date(dtstart).toLocaleString()+"</span></td>";
         tblColumn += "<td id='imp_dtend' class='text-center'><span id='span_dtend'>"+new Date(dtend).toLocaleString()+"</span></td>";
@@ -274,6 +313,7 @@ function setExistingCheckbox(uids : string[], category : string){
 
                 }
             $('#exists_' + data[0].uid ).prop('checked', chkExists);
+            $('#delete_wpid_' + data[0].uid ).prop('disabled', !chkExists);
             $('#import_' + data[0].uid ).prop('checked', !chkExists); //Enable import because it doesn't exist
 
             disableButton("btn_choose_category",false);
