@@ -27,6 +27,6 @@
 
 ## Log text area
 
-This text component contains information on actions - purly for debugging purposes.
+This text component contains information on actions - purely for debugging purposes.
 
 ![Log](./img/logwindow.png)
