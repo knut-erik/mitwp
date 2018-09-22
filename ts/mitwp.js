@@ -54,7 +54,8 @@ function deleteFromWP(rowuid) {
         success: function (result) {
             result = JSON.parse(result);
             if (result.success = 'true') {
-                log_info('Post ' + result.post_id + ' Deleted - ' + result.success);
+                log_info('Post_id [' + result.post_id + '] Deleted - [' + result.success + ']');
+                setExistingCheckbox(Array(rowuid), category);
             }
             else {
                 log_info('Could not delete? - DELETE returned ' + result.success + ' for Post ' + result.post_id);
@@ -185,8 +186,12 @@ function setExistingCheckbox(uids, category) {
                 $('#row_' + data.uid).prop('class', 'success');
                 $('#imp_wpid_' + data.uid).text(data.post_id);
             }
+            else {
+                $('#row_' + data.uid).prop('class', '');
+                $('#imp_wpid_' + data.uid).text('');
+            }
             $('#exists_' + data.uid).prop('checked', chkExists);
-            $('#delete_wpid_' + data.uid).prop('disabled', !chkExists);
+            disableButton("delete_wpid_" + data.uid, !chkExists);
             $('#import_' + data.uid).prop('checked', !chkExists);
             disableButton("btn_choose_category", false);
             disableButton("btn_import", false);

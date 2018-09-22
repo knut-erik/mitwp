@@ -1,5 +1,6 @@
 //Import jquery TS
 import * as jQuery from 'jquery';
+
 //TODO: Get ICAL as a module for TypeScript
 let ICAL : any;
 
@@ -92,7 +93,13 @@ function deleteFromWP(rowuid : string){
             // Do something with the result
             result = JSON.parse(result);
             if(result.success='true'){
-                log_info('Post ' + result.post_id + ' Deleted - ' + result.success);
+                log_info('Post_id [' + result.post_id + '] Deleted - [' + result.success+ ']');
+
+                //Disable Delete button, background on row, wp post_id to empty
+                //disableButton("delete_wpid_" + rowuid, true);
+                //$('#row_' + rowuid ).prop('class', '');
+                setExistingCheckbox(Array(rowuid), category);
+
             }else{
                 log_info('Could not delete? - DELETE returned ' + result.success + ' for Post ' + result.post_id);
             }            
@@ -249,8 +256,8 @@ function getICalTable(iCalAsString : string, category : string): [string[], stri
         let dtstart = allSubComponents[i].getFirstPropertyValue('dtstart');
         let dtend = allSubComponents[i].getFirstPropertyValue('dtend');
         let uid = allSubComponents[i].getFirstPropertyValue('uid');
-
-        //TODO: Noen annen måte?
+        
+        //TODO: Any other way to do this?
         uids.push(uid);
 
         //Empty strings instead of null
@@ -322,11 +329,16 @@ function setExistingCheckbox(uids : string[], category : string){
                         $('#row_' + data.uid ).prop('class', 'success');
                         $('#imp_wpid_' + data.uid ).text(data.post_id);
 
+                }else{
+                        //Clear the success flag and the Wordpress Post ID
+                        $('#row_' + data.uid).prop('class', '');
+                        $('#imp_wpid_' + data.uid).text('');
                 }
             $('#exists_' + data.uid ).prop('checked', chkExists);
-            $('#delete_wpid_' + data.uid ).prop('disabled', !chkExists);
+            disableButton("delete_wpid_" + data.uid,!chkExists);
             $('#import_' + data.uid ).prop('checked', !chkExists); //Enable import because it doesn't exist
 
+            
             disableButton("btn_choose_category",false);
             disableButton("btn_import",false);
         });
