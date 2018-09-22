@@ -20,6 +20,19 @@ function log_info(info : string){
 }
 
 /**
+ * Return url to REST API
+ * 
+ * @param {string} [info] - Text which should be logged to the <div id='log'>
+ * @returns {string} - The url to the REST API
+ */
+function get_api_url() : string {
+    
+    let apiurl = $("#home_url").text();
+    apiurl += "/wp-json/tm/v1/events/";
+    return apiurl;
+}
+
+/**
  * Disable a button with the corresponding buttonID.
  * 
  * @param {string} [buttonID] - ID of button to disable
@@ -64,12 +77,12 @@ function getiCalFromUrl(urlUID : string, category : string){
 
 function deleteFromWP(rowuid : string){
     
-    let restapi = $("#home_url").text();
+    let restapi = get_api_url();
     let postid = $("#imp_wpid_"+rowuid).text();
     let category = $("#imp_data_category_"+rowuid+ " span").text();
 
     //log_info(postid);
-    restapi += "/wp-json/tm/v1/deletepost/" + "?postid=" + postid + "&category="+category;
+    restapi += "?postid=" + postid + "&category="+category;
     
     $.ajax({
         url: restapi,
@@ -77,12 +90,11 @@ function deleteFromWP(rowuid : string){
         ,
         success: function(result) {
             // Do something with the result
-            let resultasstring = JSON.stringify(result);
-            let resultasjson = JSON.parse(resultasstring);
-            if(resultasjson.success='true'){
-                log_info('Post ' + resultasjson.postid + ' Deleted - ' + resultasjson.result);
+            result = JSON.parse(result);
+            if(result.success='true'){
+                log_info('Post ' + result.post_id + ' Deleted - ' + result.success);
             }else{
-                log_info('DELETE returned ' + resultasjson.success + ' for Post ' + resultasjson.postid);
+                log_info('Could not delete? - DELETE returned ' + result.success + ' for Post ' + result.post_id);
             }            
         },
         error: function() {
@@ -91,7 +103,7 @@ function deleteFromWP(rowuid : string){
         }
 
     });
-    //delte post
+    
     //remove id form div tabg
     //remove success
     //disable delete button
@@ -103,14 +115,12 @@ function deleteFromWP(rowuid : string){
  */
 function saveImports(){
 
-    let homeUrl = $("#home_url").text();
-    let postUrl = homeUrl + "/wp-json/tm/v1/uid/";
+    let apiurl = get_api_url();
 
     //run through each row - Slice will select form 0 to the end.
     let rows = $("tbody#imp_table_body tr").slice(0);    
-    
-    //TODO: Must not insert when shit is already there
-    //console.log(rows);
+
+    //Loop through and save those which triggers - importornot
     for(let i=0; i<rows.length;i++){
 
         //Slice to get the uid
@@ -147,17 +157,16 @@ function saveImports(){
                 + new Date(post_data.dtend).toLocaleString());
 
             //Fire off a post (REST API) insert/update data
-            jQuery.post(postUrl, post_data, function(data, status){
+            jQuery.post(apiurl, post_data, function(data, status){
                 //Disable buttons
                 disableButton("btn_choose_category",true);
                 disableButton("btn_import",true);
-                 
-                //Whatever
-                data = JSON.stringify(data);
+
+                //Parse string to JSON object
                 data = JSON.parse(data);
 
-                //TODO: Must be a better way - a bit hardcoded. Look at the data the API produces
-                setExistingCheckbox( Array(data[0].uid), data[0].category);
+                //Set exists checkbox and enable buttons
+                setExistingCheckbox( Array(data.uid), data.category);
                 disableButton("btn_choose_category",false);
                 disableButton("btn_import",false);
             },'json');
@@ -289,32 +298,34 @@ function getICalTable(iCalAsString : string, category : string): [string[], stri
  */
 function setExistingCheckbox(uids : string[], category : string){
 
-    let homeUrl = $("#home_url").text();
-    homeUrl += "/wp-json/tm/v1/uid/";
+    let apiurl = get_api_url();
 
     disableButton("btn_choose_category",true);
     disableButton("btn_import",true);
 
     log_info('Check if posts exists in WP - if so mark the rows');
     for(let i=0;i < uids.length;i++){
-            let restapi = homeUrl + "?id=" + uids[i] +"&category=" + category;
+            let restapi = apiurl + "?uid=" + uids[i] +"&category=" + category;
 
             //Call the REST API
             jQuery.get(restapi, function(data, status){
+
+                //Parse JSON string into object
+                data = JSON.parse(data);
 
                 disableButton("btn_choose_category",true);
                 disableButton("btn_import",true);        
     
                 let chkExists = false;
-                if( parseInt(data[0].found) == 1){
+                if( parseInt(data.found) == 1){
                         chkExists = true;
-                        $('#row_' + data[0].uid ).prop('class', 'success');
-                        $('#imp_wpid_' + data[0].uid ).text(data[0].post_id);
+                        $('#row_' + data.uid ).prop('class', 'success');
+                        $('#imp_wpid_' + data.uid ).text(data.post_id);
 
                 }
-            $('#exists_' + data[0].uid ).prop('checked', chkExists);
-            $('#delete_wpid_' + data[0].uid ).prop('disabled', !chkExists);
-            $('#import_' + data[0].uid ).prop('checked', !chkExists); //Enable import because it doesn't exist
+            $('#exists_' + data.uid ).prop('checked', chkExists);
+            $('#delete_wpid_' + data.uid ).prop('disabled', !chkExists);
+            $('#import_' + data.uid ).prop('checked', !chkExists); //Enable import because it doesn't exist
 
             disableButton("btn_choose_category",false);
             disableButton("btn_import",false);

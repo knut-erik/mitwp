@@ -19,6 +19,11 @@ function log_info(info) {
     }
     textArea.scrollTop(textArea[0].scrollHeight);
 }
+function get_api_url() {
+    var apiurl = $("#home_url").text();
+    apiurl += "/wp-json/tm/v1/events/";
+    return apiurl;
+}
 function disableButton(buttonID, disable) {
     $("#" + buttonID).prop('disabled', disable);
 }
@@ -39,21 +44,20 @@ function getiCalFromUrl(urlUID, category) {
     });
 }
 function deleteFromWP(rowuid) {
-    var restapi = $("#home_url").text();
+    var restapi = get_api_url();
     var postid = $("#imp_wpid_" + rowuid).text();
     var category = $("#imp_data_category_" + rowuid + " span").text();
-    restapi += "/wp-json/tm/v1/deletepost/" + "?postid=" + postid + "&category=" + category;
+    restapi += "?postid=" + postid + "&category=" + category;
     $.ajax({
         url: restapi,
         type: 'DELETE',
         success: function (result) {
-            var resultasstring = JSON.stringify(result);
-            var resultasjson = JSON.parse(resultasstring);
-            if (resultasjson.success = 'true') {
-                log_info('Post ' + resultasjson.postid + ' Deleted - ' + resultasjson.result);
+            result = JSON.parse(result);
+            if (result.success = 'true') {
+                log_info('Post ' + result.post_id + ' Deleted - ' + result.success);
             }
             else {
-                log_info('DELETE returned ' + resultasjson.success + ' for Post ' + resultasjson.postid);
+                log_info('Could not delete? - DELETE returned ' + result.success + ' for Post ' + result.post_id);
             }
         },
         error: function () {
@@ -62,8 +66,7 @@ function deleteFromWP(rowuid) {
     });
 }
 function saveImports() {
-    var homeUrl = $("#home_url").text();
-    var postUrl = homeUrl + "/wp-json/tm/v1/uid/";
+    var apiurl = get_api_url();
     var rows = $("tbody#imp_table_body tr").slice(0);
     for (var i = 0; i < rows.length; i++) {
         var rowUid = rows[i]['id'].slice(4);
@@ -93,12 +96,11 @@ function saveImports() {
             log_info('IMPORTING TO WP : ' + post_data.event_summary + ' - '
                 + new Date(post_data.dtstart).toLocaleString() + ' - '
                 + new Date(post_data.dtend).toLocaleString());
-            jQuery.post(postUrl, post_data, function (data, status) {
+            jQuery.post(apiurl, post_data, function (data, status) {
                 disableButton("btn_choose_category", true);
                 disableButton("btn_import", true);
-                data = JSON.stringify(data);
                 data = JSON.parse(data);
-                setExistingCheckbox(Array(data[0].uid), data[0].category);
+                setExistingCheckbox(Array(data.uid), data.category);
                 disableButton("btn_choose_category", false);
                 disableButton("btn_import", false);
             }, 'json');
@@ -167,25 +169,25 @@ function getICalTable(iCalAsString, category) {
     return [uids, tblHTML];
 }
 function setExistingCheckbox(uids, category) {
-    var homeUrl = $("#home_url").text();
-    homeUrl += "/wp-json/tm/v1/uid/";
+    var apiurl = get_api_url();
     disableButton("btn_choose_category", true);
     disableButton("btn_import", true);
     log_info('Check if posts exists in WP - if so mark the rows');
     for (var i = 0; i < uids.length; i++) {
-        var restapi = homeUrl + "?id=" + uids[i] + "&category=" + category;
+        var restapi = apiurl + "?uid=" + uids[i] + "&category=" + category;
         jQuery.get(restapi, function (data, status) {
+            data = JSON.parse(data);
             disableButton("btn_choose_category", true);
             disableButton("btn_import", true);
             var chkExists = false;
-            if (parseInt(data[0].found) == 1) {
+            if (parseInt(data.found) == 1) {
                 chkExists = true;
-                $('#row_' + data[0].uid).prop('class', 'success');
-                $('#imp_wpid_' + data[0].uid).text(data[0].post_id);
+                $('#row_' + data.uid).prop('class', 'success');
+                $('#imp_wpid_' + data.uid).text(data.post_id);
             }
-            $('#exists_' + data[0].uid).prop('checked', chkExists);
-            $('#delete_wpid_' + data[0].uid).prop('disabled', !chkExists);
-            $('#import_' + data[0].uid).prop('checked', !chkExists);
+            $('#exists_' + data.uid).prop('checked', chkExists);
+            $('#delete_wpid_' + data.uid).prop('disabled', !chkExists);
+            $('#import_' + data.uid).prop('checked', !chkExists);
             disableButton("btn_choose_category", false);
             disableButton("btn_import", false);
         });

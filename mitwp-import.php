@@ -9,7 +9,7 @@ function renderHTML() {
         wp_die(__('You do not have sufficient permissions of this site.'));
 
     //TODO: Change before prod
-    define( 'WP_DEBUG', false);
+    define( 'WP_DEBUG', true);
 
     /* Bootstrap */
     //Styles and scripts (Bootstrap)
@@ -26,13 +26,13 @@ function renderHTML() {
 
 
     //Register and enque javascript file
-    wp_register_script( 'mitwp_js', plugin_dir_url(__FILE__) . '/ts/mitwp.js');
-    wp_enqueue_script('mitwp_js', plugin_dir_url(__FILE__) . '/ts/mitwp.js');
+    wp_register_script( 'mitwp_js', plugin_dir_url(__FILE__) . 'ts/mitwp.js');
+    wp_enqueue_script('mitwp_js', plugin_dir_url(__FILE__) . 'ts/mitwp.js');
 
-    wp_register_script('ical_js', plugin_dir_url(__FILE__) . '/js/ical.min.js');
-    wp_enqueue_script('ical_js', plugin_dir_url(__FILE__) . '/js/ical.min.js');
+    wp_register_script('ical_js', plugin_dir_url(__FILE__) . 'js/ical.min.js');
+    wp_enqueue_script('ical_js', plugin_dir_url(__FILE__) . 'js/ical.min.js');
 
-    wp_register_style( 'mitwp_css',  plugin_dir_url(__FILE__) . '/css/mitwp.css' );
+    wp_register_style( 'mitwp_css',  plugin_dir_url(__FILE__) . 'css/mitwp.css' );
     wp_enqueue_style( 'mitwp_css');
 
 

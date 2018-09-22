@@ -5,8 +5,6 @@ function optionsHTML() {
 
     if (!current_user_can('import'))
         wp_die(__('You do not have sufficient permissions of this site.'));
-    //TODO: Change before prod
-    define( 'WP_DEBUG', false);
     
 
     /* Bootstrap */
