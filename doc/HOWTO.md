@@ -13,7 +13,7 @@
 
 3. Choose which rows you want to import as an Wordpress Event, by selec/unselect checkmarks. (**Checkmark** = import)
 
-4. Press the **Importer iCal Data**, which then will import the selected events in Wordpress.
+4. Press the **Importer iCal Data**, which then will import the selected events in Wordpress. If the row (EVENT) exists in wordpress, the import will update dates, title and description content. All other fields which is adjusted in post will not be changed.
 
 ![Import iCal Data](./img/import_ical_data.png)
 
