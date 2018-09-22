@@ -76,6 +76,11 @@ function getiCalFromUrl(urlUID : string, category : string){
 
 }
 
+/**
+ * Delete Post from Wordpress
+ * 
+ * @param {string} [rowuid] - Unique EVENT UID from the iCal file.
+ */
 function deleteFromWP(rowuid : string){
     
     let restapi = get_api_url();
