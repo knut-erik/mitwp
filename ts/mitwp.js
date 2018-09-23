@@ -151,7 +151,8 @@ function getICalTable(iCalAsString, category) {
         }
         var oneRow = "<tr id='row_" + uid + "' >";
         var tblColumn = "<td id='imp_import' class='text-center'><input id='import_" + uid + "' type='checkbox' /></td>";
-        tblColumn += "<td id='imp_exists' class='text-center'><input id='exists_" + uid + "' type='radio' disabled readOnly />";
+        tblColumn += "<td id='imp_exists' class='text-center'><span id='imp_exists_icon_" + uid + "' class=''></span>&nbsp;";
+        tblColumn += "<input style='opacity: 0;' id='exists_" + uid + "' type='radio' disabled readOnly />";
         tblColumn += "&nbsp;&nbsp;<button id='delete_wpid_" + uid + "' onclick='deleteFromWP(\"" + uid + "\")' class='btn btn-danger' disabled>" + mitwptrans.delete + "</td>";
         tblColumn += "<td id='imp_summary_" + uid + "'><span>" + summary + "</span></td>";
         tblColumn += "<td id='imp_dtstart_" + uid + "' class='text-center'><span>" + new Date(dtstart).toLocaleString() + "</span></td>";
@@ -175,7 +176,8 @@ function setExistingCheckbox(uids, category) {
     disableButton("btn_choose_category", true);
     disableButton("btn_import", true);
     log_info('Check if posts exists in WP - if so mark the rows');
-    for (var i = 0; i < uids.length; i++) {
+    var _loop_1 = function (i) {
+        var gylphicon = 'glyphicon ';
         var restapi = apiurl + "?uid=" + uids[i] + "&category=" + category;
         jQuery.get(restapi, function (data, status) {
             data = JSON.parse(data);
@@ -184,18 +186,24 @@ function setExistingCheckbox(uids, category) {
             var chkExists = false;
             if (parseInt(data.found) == 1) {
                 chkExists = true;
+                gylphicon += 'glyphicon-thumbs-up';
                 $('#row_' + data.uid).prop('class', 'success');
                 $('#imp_wpid_' + data.uid).text(data.post_id);
             }
             else {
                 $('#row_' + data.uid).prop('class', '');
                 $('#imp_wpid_' + data.uid).text('');
+                gylphicon += 'glyphicon-thumbs-down';
             }
             $('#exists_' + data.uid).prop('checked', chkExists);
+            $('#imp_exists_icon_' + data.uid).prop('class', gylphicon);
             disableButton("delete_wpid_" + data.uid, !chkExists);
             $('#import_' + data.uid).prop('checked', !chkExists);
             disableButton("btn_choose_category", false);
             disableButton("btn_import", false);
         });
+    };
+    for (var i = 0; i < uids.length; i++) {
+        _loop_1(i);
     }
 }

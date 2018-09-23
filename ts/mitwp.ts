@@ -280,7 +280,9 @@ function getICalTable(iCalAsString : string, category : string): [string[], stri
         let oneRow =  "<tr id='row_" + uid + "' >";
         let tblColumn = "<td id='imp_import' class='text-center'><input id='import_" + uid + "' type='checkbox' /></td>";
         
-        tblColumn += "<td id='imp_exists' class='text-center'><input id='exists_" + uid + "' type='radio' disabled readOnly />";
+        tblColumn += "<td id='imp_exists' class='text-center'><span id='imp_exists_icon_" +uid+"' class=''></span>&nbsp;";
+        tblColumn += "<input style='opacity: 0;' id='exists_" + uid + "' type='radio' disabled readOnly />";
+
         tblColumn += "&nbsp;&nbsp;<button id='delete_wpid_" + uid + "' onclick='deleteFromWP(\"" + uid + "\")' class='btn btn-danger' disabled>" + mitwptrans.delete + "</td>";
 
         tblColumn += "<td id='imp_summary_"+uid +"'><span>"+summary+"</span></td>";
@@ -314,13 +316,15 @@ function getICalTable(iCalAsString : string, category : string): [string[], stri
  */
 function setExistingCheckbox(uids : string[], category : string){
 
-    let apiurl = get_api_url();
+    let apiurl = get_api_url();    
 
     disableButton("btn_choose_category",true);
     disableButton("btn_import",true);
 
     log_info('Check if posts exists in WP - if so mark the rows');
     for(let i=0;i < uids.length;i++){
+        
+            let gylphicon = 'glyphicon ';
             let restapi = apiurl + "?uid=" + uids[i] +"&category=" + category;
 
             //Call the REST API
@@ -335,6 +339,7 @@ function setExistingCheckbox(uids : string[], category : string){
                 let chkExists = false;
                 if( parseInt(data.found) == 1){
                         chkExists = true;
+                        gylphicon += 'glyphicon-thumbs-up';
                         $('#row_' + data.uid ).prop('class', 'success');
                         $('#imp_wpid_' + data.uid ).text(data.post_id);
 
@@ -342,8 +347,10 @@ function setExistingCheckbox(uids : string[], category : string){
                         //Clear the success flag and the Wordpress Post ID
                         $('#row_' + data.uid).prop('class', '');
                         $('#imp_wpid_' + data.uid).text('');
+                        gylphicon += 'glyphicon-thumbs-down';
                 }
             $('#exists_' + data.uid ).prop('checked', chkExists);
+            $('#imp_exists_icon_' + data.uid ).prop('class', gylphicon);
             disableButton("delete_wpid_" + data.uid,!chkExists);
             $('#import_' + data.uid ).prop('checked', !chkExists); //Enable import because it doesn't exist
 
