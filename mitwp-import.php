@@ -112,7 +112,7 @@ function renderHTML() {
                         <thead id="imp_table_head">
                             <tr>
                                 <th class="text-center active"><?php _e('Import','mitwp'); ?></th>
-                                <th class="text-center active"><?php _e('Exists','mitwp'); ?></th>
+                                <th class="text-center active"><?php _e('Exist','mitwp'); ?></th>
                                 <th class="text-center active"><?php _e('Title','mitwp'); ?></th>
                                 <th class="text-center active"><?php _e('Begins','mitwp'); ?></th>
                                 <th class="text-center active"><?php _e('Ends','mitwp'); ?></th>

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: mitwp plugin\n"
-"POT-Creation-Date: 2018-09-23 20:15+0200\n"
+"POT-Creation-Date: 2018-09-23 20:49+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: TM\n"
@@ -43,8 +43,8 @@ msgid "Import"
 msgstr "Importere"
 
 #: mitwp-import.php:115
-msgid "Exists"
-msgstr "Eksisterer"
+msgid "Exist"
+msgstr "Er importert"
 
 #: mitwp-import.php:116
 msgid "Title"
@@ -105,6 +105,9 @@ msgstr "Importere iCal to WP - Opsjoner"
 #: mitwp.php:82
 msgid "Options"
 msgstr "Opsjoner"
+
+#~ msgid "Exists"
+#~ msgstr "Eksisterer"
 
 #~ msgid "DELETEA"
 #~ msgstr "SLETT"
