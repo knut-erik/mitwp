@@ -4,6 +4,10 @@ import * as jQuery from 'jquery';
 //TODO: Get ICAL as a module for TypeScript
 let ICAL : any;
 
+//Contains translated strings fired off at the wp side
+//Transferd as this variable
+let mitwptrans : any;
+
 /**
  * Disable a button with the corresponding buttonID.
  * 
@@ -273,11 +277,11 @@ function getICalTable(iCalAsString : string, category : string): [string[], stri
             summary = "";
         }
     
-        let oneRow = "<tr id='row_" + uid + "' >";
+        let oneRow =  "<tr id='row_" + uid + "' >";
         let tblColumn = "<td id='imp_import' class='text-center'><input id='import_" + uid + "' type='checkbox' /></td>";
         
         tblColumn += "<td id='imp_exists' class='text-center'><input id='exists_" + uid + "' type='radio' disabled readOnly />";
-        tblColumn += "&nbsp;&nbsp;<button id='delete_wpid_" + uid + "' onclick='deleteFromWP(\"" + uid + "\")' class='btn btn-danger' disabled>Delete</td>";
+        tblColumn += "&nbsp;&nbsp;<button id='delete_wpid_" + uid + "' onclick='deleteFromWP(\"" + uid + "\")' class='btn btn-danger' disabled>" + mitwptrans.delete + "</td>";
 
         tblColumn += "<td id='imp_summary_"+uid +"'><span>"+summary+"</span></td>";
         tblColumn += "<td id='imp_dtstart_"+uid +"' class='text-center'><span>"+new Date(dtstart).toLocaleString()+"</span></td>";

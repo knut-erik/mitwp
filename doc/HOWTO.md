@@ -3,7 +3,7 @@
 
 ## Select category and import
 
-1. Use dropdownbox to select category which should be listed. 
+1. Use dropdownbox to select category. Once selected the table will be populated with information from the iCAL file. 
 
 ![Choose Category](./img/dropdown.png)
 

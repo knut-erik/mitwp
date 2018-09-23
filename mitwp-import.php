@@ -8,30 +8,36 @@ function renderHTML() {
     if ( !current_user_can('import') )
         wp_die(__('You do not have sufficient permissions of this site.'));
 
-
-    /* Bootstrap */
-    //Styles and scripts (Bootstrap)
-    wp_register_style( 'medimp_bootstrap', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' );
-    wp_register_style( 'medimp_bootstraptheme', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css' );
-    wp_register_script( 'medimp_jquery', '//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js' );
-    wp_register_script( 'medimp_bootstrap_js', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js' );
-
-
-    wp_enqueue_style( 'medimp_bootstrap');
-    wp_enqueue_style( 'medimp_bootstraptheme');
-    wp_enqueue_script( 'medimp_jquery');
-    wp_enqueue_script( 'medimp_bootstrap_js');
+        /* Bootstrap */
+        //Styles and scripts (Bootstrap)
+        wp_register_style( 'medimp_bootstrap', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' );
+        wp_register_style( 'medimp_bootstraptheme', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css' );
+        wp_register_script( 'medimp_jquery', '//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js' );
+        wp_register_script( 'medimp_bootstrap_js', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js' );
 
 
-    //Register and enque javascript file
-    wp_register_script( 'mitwp_js', plugin_dir_url(__FILE__) . 'ts/mitwp.js');
-    wp_enqueue_script('mitwp_js', plugin_dir_url(__FILE__) . 'ts/mitwp.js');
+        wp_enqueue_style( 'medimp_bootstrap');
+        wp_enqueue_style( 'medimp_bootstraptheme');
+        wp_enqueue_script( 'medimp_jquery');
+        wp_enqueue_script( 'medimp_bootstrap_js');
 
-    wp_register_script('ical_js', plugin_dir_url(__FILE__) . 'js/ical.min.js');
-    wp_enqueue_script('ical_js', plugin_dir_url(__FILE__) . 'js/ical.min.js');
 
-    wp_register_style( 'mitwp_css',  plugin_dir_url(__FILE__) . 'css/mitwp.css' );
-    wp_enqueue_style( 'mitwp_css');
+        //Register and enque javascript file
+        wp_register_script( 'mitwp_js', plugin_dir_url(__FILE__) . 'ts/mitwp.js');
+        // Localize javascript
+        $mitwp_trans = array(
+            'delete' => __( 'DELETE' , 'mitwp' ),
+            'a_value' => '10'
+        );
+
+        wp_localize_script( 'mitwp_js', 'mitwptrans', $mitwp_trans );
+        wp_enqueue_script('mitwp_js', plugin_dir_url(__FILE__) . 'ts/mitwp.js');
+
+        wp_register_script('ical_js', plugin_dir_url(__FILE__) . 'js/ical.min.js');
+        wp_enqueue_script('ical_js', plugin_dir_url(__FILE__) . 'js/ical.min.js');
+
+        wp_register_style( 'mitwp_css',  plugin_dir_url(__FILE__) . 'css/mitwp.css' );
+        wp_enqueue_style( 'mitwp_css');    
 
     ?>
        <div class="container-fluid">

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: mitwp plugin\n"
-"POT-Creation-Date: 2018-09-23 15:42+0200\n"
+"POT-Creation-Date: 2018-09-23 20:15+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: TM\n"
@@ -16,44 +16,49 @@ msgstr ""
 "X-Poedit-SearchPath-1: mitwp-import.php\n"
 "X-Poedit-SearchPath-2: mitwp-options.php\n"
 "X-Poedit-SearchPath-3: utils.php\n"
+"X-Poedit-SearchPath-4: ts/mitwp.ts\n"
 
 #: mitwp-import.php:9 mitwp-options.php:7
 msgid "You do not have sufficient permissions of this site."
 msgstr "Du har ikke tilgangen du behøver for å bruke plugin'en."
 
-#: mitwp-import.php:42 mitwp-options.php:33
+#: mitwp-import.php:29
+msgid "DELETE"
+msgstr "SLETT"
+
+#: mitwp-import.php:48 mitwp-options.php:33
 msgid "HOME URL : "
 msgstr "HJEMME URL : "
 
-#: mitwp-import.php:42 mitwp-options.php:33
+#: mitwp-import.php:48 mitwp-options.php:33
 msgid "USER: "
-msgstr "BRUKER:"
+msgstr "BRUKER: "
 
-#: mitwp-import.php:66
+#: mitwp-import.php:72
 msgid "Choose Group"
 msgstr "Velg gruppe"
 
-#: mitwp-import.php:95 mitwp-import.php:108
+#: mitwp-import.php:101 mitwp-import.php:114
 msgid "Import"
 msgstr "Importere"
 
-#: mitwp-import.php:109
+#: mitwp-import.php:115
 msgid "Exists"
 msgstr "Eksisterer"
 
-#: mitwp-import.php:110
+#: mitwp-import.php:116
 msgid "Title"
 msgstr "Tittel"
 
-#: mitwp-import.php:111
+#: mitwp-import.php:117
 msgid "Begins"
 msgstr "Starter"
 
-#: mitwp-import.php:112
+#: mitwp-import.php:118
 msgid "Ends"
 msgstr "Slutter"
 
-#: mitwp-import.php:113
+#: mitwp-import.php:119
 msgid "Description"
 msgstr "Beskrivelse"
 
@@ -100,6 +105,9 @@ msgstr "Importere iCal to WP - Opsjoner"
 #: mitwp.php:82
 msgid "Options"
 msgstr "Opsjoner"
+
+#~ msgid "DELETEA"
+#~ msgstr "SLETT"
 
 #~ msgid "Importere iCal til WP"
 #~ msgstr "Importere iCal til WP"
