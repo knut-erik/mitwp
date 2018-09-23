@@ -30,7 +30,7 @@ function optionsHTML() {
     -->
     <div class="container-fluid">
         <div class="alert alert-success">
-            <strong>HOME URL : <?php echo get_home_url() ?>&nbsp;-&nbsp;USER:&nbsp;<?php echo wp_get_current_user()->display_name ?></strong>            
+            <strong><?php _e('HOME URL : ','mitwp'); echo get_home_url(); ?>&nbsp;-&nbsp;<?php _e('USER: ','mitwp'); ?>&nbsp;<?php echo wp_get_current_user()->display_name ?></strong>
         </div>
         <p>Not in use - for the future.</p>
     </div>

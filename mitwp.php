@@ -4,6 +4,8 @@ Plugin Name: mitwp
 Description: Plugin which imports iCal events to WP Events
 Version: 1.0
 Author: Knut Erik Hollund
+Text Domain: mitwp
+Domain Path: /lang
 License: GPLv3
 */
 
@@ -15,28 +17,28 @@ define('LABORA_URL_PARAMS', '&M=12&pub=true&pubtext=default');
 
 //UIDs for Labora URLS
 define('GUDSTJENESTE_ICAL_UID', '8fa0ae2d-2380-400b-9960-a56500bfaf87');
-define('GUDSTJENESTE_BTN_TXT', 'Gudstjeneste');
+define('GUDSTJENESTE_BTN_TXT', __('Gudstjeneste','mitwp'));
 
 define('JESHA_ICAL_UID', 'adaff720-238e-4c70-b093-a5ce012edb92');
-define('JESHA_BTN_TXT', 'Jesha');
+define('JESHA_BTN_TXT', __('Jesha','mitwp'));
 
 define('ESC_ICAL_UID', '0894eaa7-ac72-4461-b41a-a5ce0130c621');
-define('ESC_BTN_TXT', 'ESC');
+define('ESC_BTN_TXT', __('ESC','mitwp'));
 
 define('JENTEKVELD_ICAL_UID', 'fbdaa49d-f23d-452c-ac31-a669012935b9');
-define('JENTEKVELD_BTN_TXT', 'Jentekveld');
+define('JENTEKVELD_BTN_TXT', __('Jentekveld','mitwp'));
 
 define('ARRANGEMENT_ICAL_UID', 'b4282c0e-0a1c-472b-be22-a67d016b0ab4');
-define('ARRANGEMENT_BTN_TXT', 'Arrangement');
+define('ARRANGEMENT_BTN_TXT', __('Arrangement','mitwp'));
 
 define('BARNEKOR_ICAL_UID', '34c495de-5857-4b70-b435-a5df012ae4a5');
-define('BARNEKOR_BTN_TXT', 'Barnekor');
+define('BARNEKOR_BTN_TXT', __('Barnekor','mitwp'));
 
 define('TABAGO_ICAL_UID', 'c070e65c-32c4-4599-aa16-a56c015e0beb');
-define('TABAGO_BTN_TXT', 'Tabago');
+define('TABAGO_BTN_TXT', __('Tabago','mitwp'));
 
 define('KONFIRMANT_ICAL_UID', '06cc98dc-393f-42e7-9046-a5ce0130ef70');
-define('KONFIRMANT_BTN_TXT', 'Konfirmant');
+define('KONFIRMANT_BTN_TXT', __('Konfirmant','mitwp'));
 
 
 //Require once to load the php code, else it would not be found
@@ -51,6 +53,14 @@ register_activation_hook(__FILE__,'mitwp_install');
 /* Runs on plugin deactivation*/
 register_deactivation_hook( __FILE__, 'mitwp_remove' );
 
+
+add_action( 'init', 'mitwp_load_textdomain' );
+/**
+ * Load plugin textdomain.
+ */
+function mitwp_load_textdomain() {
+  load_plugin_textdomain( 'mitwp', false, dirname( plugin_basename( __FILE__ ) ) . '/lang' );   
+}
 
 function mitwp_install() {
     //TODO: Something to do here?
@@ -68,8 +78,8 @@ if (is_admin() ){
 
     function mitwp_admin_menu() {
         //add_menu_page( 'MITWP', 'Importere iCal til WP', 'administrator', 'mitwp-import','renderHTML');
-        add_menu_page( 'Importere iCal til WP', 'Import - iCal til WP', 'administrator', 'mitwp-import','renderHTML');
-        add_submenu_page('mitwp-import', 'Importere iCal til WP - Options', 'Options', 'manage_options', 'mitwp-options', 'optionsHTML');
+        add_menu_page( __('Import iCal to WP','mitwp'), __('Import iCal to WP','mitwp'), 'administrator', 'mitwp-import','renderHTML');
+        add_submenu_page('mitwp-import', __('Import iCal to WP - Options','mitwp'), __('Options','mitwp'), 'manage_options', 'mitwp-options', 'optionsHTML');
     }
 }
 
