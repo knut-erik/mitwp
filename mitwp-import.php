@@ -69,7 +69,7 @@ function renderHTML() {
             <!-- LEFT COLUMN -->
             <div class="col-md-2">
                             <div class="dropdown pull-left">
-                                <button id="btn_choose_category" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><?php _e('Choose Group','mitwp'); ?>&nbsp;&nbsp;<span class="caret"></span></button>
+                                <button id="btn_choose_category" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><?php _e('Choose Group','mitwp'); ?>&nbsp;<span class='glyphicon glyphicon-folder-open'></span>&nbsp;&nbsp;<span class="caret"></span></button>
                                 <ul class="dropdown-menu">
                                     <li><a href="javascript:getiCalFromUrl('<?php echo constant('GUDSTJENESTE_ICAL_UID'); ?>'
                                     , '<?php echo constant('GUDSTJENESTE_BTN_TXT'); ?>')"><?php echo constant('GUDSTJENESTE_BTN_TXT'); ?></a></li>
@@ -98,7 +98,7 @@ function renderHTML() {
                             </div><!-- dropdown -->
             </div> <!-- COLUMN END -->
             <div class="col-md-10">
-                <button type="button" id="btn_import" name="btn-start-import" class="btn btn-danger" onclick="saveImports()"><?php _e('Import','mitwp'); ?></button>
+                <button type="button" id="btn_import" name="btn-start-import" class="btn btn-danger" onclick="saveImports()"><?php _e('Import','mitwp'); ?>&nbsp;<span class='glyphicon glyphicon-import'></span></button>
             </div><!-- COLUMN END -->
         </div><!-- ROW END -->
         <p>&nbsp;</p>
