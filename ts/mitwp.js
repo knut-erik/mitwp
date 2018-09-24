@@ -189,7 +189,10 @@ function setExistingCheckbox(uids, category) {
     log_info('Check if posts exists in WP - if so mark the rows');
     var _loop_1 = function (i) {
         var gylphicon = 'glyphicon ';
-        var restapi = apiurl + "?uid=" + uids[i] + "&category=" + category;
+        var summary = $("#imp_summary_" + uids[i] + " span").text();
+        var dtstart = $("#imp_dtstart_utc_" + uids[i]).text();
+        var dtend = $("#imp_dtend_utc_" + uids[i]).text();
+        var restapi = apiurl + "?uid=" + uids[i] + "&category=" + category + "&dtstart=" + dtstart + "&dtend=" + dtend + "&title=" + summary;
         jQuery.get(restapi, function (data, status) {
             data = JSON.parse(data);
             disableButton("btn_choose_category", true);

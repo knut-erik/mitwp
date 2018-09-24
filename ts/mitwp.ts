@@ -350,7 +350,12 @@ function setExistingCheckbox(uids : string[], category : string){
     for(let i=0;i < uids.length;i++){
 
             let gylphicon = 'glyphicon ';
-            let restapi = apiurl + "?uid=" + uids[i] +"&category=" + category;
+            //let restapi = apiurl + "?uid=" + uids[i] +"&category=" + category;
+
+            let summary = $("#imp_summary_"+uids[i]+ " span").text();
+            let dtstart = $("#imp_dtstart_utc_"+uids[i]).text();
+            let dtend = $("#imp_dtend_utc_"+uids[i]).text();    
+            let restapi = apiurl + "?uid=" + uids[i] +"&category=" + category + "&dtstart="+ dtstart + "&dtend=" + dtend + "&title="+summary;
 
             //Call the REST API
             jQuery.get(restapi, function(data, status){
