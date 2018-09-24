@@ -11,6 +11,27 @@ let mitwptrans : any;
 /**
  * Disable a button with the corresponding buttonID.
  * 
+ * @param {string} [html] - HTML code which should be decoded to plain text.
+ * @param {string} - Clean text without HTML or any markup code.
+ */
+function parseHTML(html : string) : string {
+    var parser = new DOMParser;
+
+    //replace </p> and <br> with linebreaks
+    var regp = new RegExp('</p>', 'g');
+    var regbr = new RegExp('<br>', 'g');    
+    html = html.replace(regp ,"</p>\n");
+    html = html.replace(regbr ,"<br>\n");
+
+    var dom = parser.parseFromString(html, 'text/html');
+    var decodedString : string = (dom.body.textContent!=null ? dom.body.textContent : '');
+    
+    return decodedString;    
+}
+
+/**
+ * Disable a button with the corresponding buttonID.
+ * 
  * @param {string} [info] - Text which should be logged to the <div id='log'>
  */
 function log_info(info : string){
@@ -147,6 +168,10 @@ function saveImports(){
         let rowSummary = $("#imp_summary_"+rowUid+ " span").text();
         let rowCategory = $("#imp_data_category_"+rowUid+ " span").text();
         let rowDescription = $("#imp_description_"+rowUid+ " span").html();
+
+        //Remove HTML code
+        rowDescription = parseHTML(rowDescription);
+
         let rowdtStart = $("#imp_dtstart_utc_"+rowUid).text();
         let rowdtEnd = $("#imp_dtend_utc_"+rowUid).text();
         let rowUTCTZOffset = $("#imp_utctzoffset_"+rowUid).text();
@@ -323,7 +348,7 @@ function setExistingCheckbox(uids : string[], category : string){
 
     log_info('Check if posts exists in WP - if so mark the rows');
     for(let i=0;i < uids.length;i++){
-        
+
             let gylphicon = 'glyphicon ';
             let restapi = apiurl + "?uid=" + uids[i] +"&category=" + category;
 

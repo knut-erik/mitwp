@@ -10,6 +10,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var jQuery = __importStar(require("jquery"));
 var ICAL;
 var mitwptrans;
+function parseHTML(html) {
+    var parser = new DOMParser;
+    var regp = new RegExp('</p>', 'g');
+    var regbr = new RegExp('<br>', 'g');
+    html = html.replace(regp, "</p>\n");
+    html = html.replace(regbr, "<br>\n");
+    var dom = parser.parseFromString(html, 'text/html');
+    var decodedString = (dom.body.textContent != null ? dom.body.textContent : '');
+    return decodedString;
+}
 function log_info(info) {
     var textArea = $("#log");
     var logText = textArea.val();
@@ -77,6 +87,7 @@ function saveImports() {
         var rowSummary = $("#imp_summary_" + rowUid + " span").text();
         var rowCategory = $("#imp_data_category_" + rowUid + " span").text();
         var rowDescription = $("#imp_description_" + rowUid + " span").html();
+        rowDescription = parseHTML(rowDescription);
         var rowdtStart = $("#imp_dtstart_utc_" + rowUid).text();
         var rowdtEnd = $("#imp_dtend_utc_" + rowUid).text();
         var rowUTCTZOffset = $("#imp_utctzoffset_" + rowUid).text();
