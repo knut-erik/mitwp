@@ -8,6 +8,24 @@ let ICAL : any;
 //Transferd as this variable
 let mitwptrans : any;
 
+
+/**
+ * 
+ * @param id - id of <li> elements to sort
+ */
+function sortList(id : string) {
+        
+    let html : any = $("#" + id);
+    let htmlLi : any = $("#" + id + " li");
+    
+    let sorted = htmlLi.sort(
+                function (a, b) { return a.innerText == b.innerText ? 0 : a.innerText < b.innerText ? -1 : 1 }
+    );
+        
+    html.html(sorted);    
+}
+
+
 /**
  * Disable a button with the corresponding buttonID.
  * 

@@ -40,6 +40,22 @@ define('TABAGO_BTN_TXT', __('Tabago','mitwp'));
 define('KONFIRMANT_ICAL_UID', '06cc98dc-393f-42e7-9046-a5ce0130ef70');
 define('KONFIRMANT_BTN_TXT', __('Konfirmant','mitwp'));
 
+define('TREFFEN_ICAL_UID', '81b498db-fc0c-4e03-8f94-a96d0119ed3f');
+define('TREFFEN_BTN_TXT', __('Treffen','mitwp'));
+
+define('SPRAKKAFE_ICAL_UID', 'f60f3fa7-5b3b-4daa-9735-a96d0118db47');
+define('SPRAKKAFE_BTN_TXT', __('Språk Kafé','mitwp'));
+
+define('SUPERTORSDAG_ICAL_UID', 'de069f59-3c68-43a0-a009-a96d011959b2');
+define('SUPERTORSDAG_BTN_TXT', __('Supertorsdag','mitwp'));
+
+define('TANANGERGOSPEL_ICAL_UID', '99919cb8-d3d9-4f48-925d-a96d011a23c7');
+define('TANANGERGOSPEL_BTN_TXT', __('Tananger Gospel','mitwp'));
+
+define('BONNESAMLING_ICAL_UID', '019f1ea5-222d-4309-8977-a96d011e2f13');
+define('BONNESAMLING_BTN_TXT', __('Bønnesamling','mitwp'));
+
+
 
 //Require once to load the php code, else it would not be found
 require_once( dirname(__FILE__) . '/mitwp-import.php' );

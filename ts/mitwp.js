@@ -10,6 +10,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var jQuery = __importStar(require("jquery"));
 var ICAL;
 var mitwptrans;
+function sortList(id) {
+    var html = $("#" + id);
+    var htmlLi = $("#" + id + " li");
+    var sorted = htmlLi.sort(function (a, b) { return a.innerText == b.innerText ? 0 : a.innerText < b.innerText ? -1 : 1; });
+    html.html(sorted);
+}
 function parseHTML(html) {
     var parser = new DOMParser;
     var regp = new RegExp('</p>', 'g');

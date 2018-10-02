@@ -60,8 +60,8 @@ function renderHTML() {
         <div class="row">
             <div class="col-md-12">
                     <div class="dropdown pull-left">
-                        <button id="btn_choose_category" type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><?php _e('Choose Group','mitwp'); ?>&nbsp;<span class='glyphicon glyphicon-folder-open'></span>&nbsp;&nbsp;<span class="caret"></span></button>
-                        <ul class="dropdown-menu">
+                        <button id="btn_choose_category" type="button" onClick="sortList('ul_dropdown_menu')" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><?php _e('Choose Group','mitwp'); ?>&nbsp;<span class='glyphicon glyphicon-folder-open'></span>&nbsp;&nbsp;<span class="caret"></span></button>
+                        <ul class="dropdown-menu" id="ul_dropdown_menu">
                             <li><a href="javascript:getiCalFromUrl('<?php echo constant('GUDSTJENESTE_ICAL_UID'); ?>'
                             , '<?php echo constant('GUDSTJENESTE_BTN_TXT'); ?>')"><?php echo constant('GUDSTJENESTE_BTN_TXT'); ?></a></li>
 
@@ -82,6 +82,21 @@ function renderHTML() {
 
                             <li><a href="javascript:getiCalFromUrl('<?php echo constant('BARNEKOR_ICAL_UID'); ?>'
                             , '<?php echo constant('BARNEKOR_BTN_TXT'); ?>')"><?php echo constant('BARNEKOR_BTN_TXT'); ?></a></li>
+
+                            <li><a href="javascript:getiCalFromUrl('<?php echo constant('TREFFEN_ICAL_UID'); ?>'
+                            , '<?php echo constant('TREFFEN_BTN_TXT'); ?>')"><?php echo constant('TREFFEN_BTN_TXT'); ?></a></li>
+
+                            <li><a href="javascript:getiCalFromUrl('<?php echo constant('SPRAKKAFE_ICAL_UID'); ?>'
+                            , '<?php echo constant('SPRAKKAFE_BTN_TXT'); ?>')"><?php echo constant('SPRAKKAFE_BTN_TXT'); ?></a></li>
+
+                            <li><a href="javascript:getiCalFromUrl('<?php echo constant('SUPERTORSDAG_ICAL_UID'); ?>'
+                            , '<?php echo constant('SUPERTORSDAG_BTN_TXT'); ?>')"><?php echo constant('SUPERTORSDAG_BTN_TXT'); ?></a></li>
+
+                            <li><a href="javascript:getiCalFromUrl('<?php echo constant('TANANGERGOSPEL_ICAL_UID'); ?>'
+                            , '<?php echo constant('TANANGERGOSPEL_BTN_TXT'); ?>')"><?php echo constant('TANANGERGOSPEL_BTN_TXT'); ?></a></li>
+
+                            <li><a href="javascript:getiCalFromUrl('<?php echo constant('BONNESAMLING_ICAL_UID'); ?>'
+                            , '<?php echo constant('BONNESAMLING_BTN_TXT'); ?>')"><?php echo constant('BONNESAMLING_BTN_TXT'); ?></a></li>
 
                             <li><a href="javascript:getiCalFromUrl('<?php echo constant('ARRANGEMENT_ICAL_UID'); ?>'
                             , '<?php echo constant('ARRANGEMENT_BTN_TXT'); ?>')"><?php echo constant('ARRANGEMENT_BTN_TXT'); ?></a></li>
