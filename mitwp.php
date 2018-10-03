@@ -44,7 +44,7 @@ define('TREFFEN_ICAL_UID', '81b498db-fc0c-4e03-8f94-a96d0119ed3f');
 define('TREFFEN_BTN_TXT', __('Treffen','mitwp'));
 
 define('SPRAKKAFE_ICAL_UID', 'f60f3fa7-5b3b-4daa-9735-a96d0118db47');
-define('SPRAKKAFE_BTN_TXT', __('Språk Kafé','mitwp'));
+define('SPRAKKAFE_BTN_TXT', __('Språkkafé','mitwp'));
 
 define('SUPERTORSDAG_ICAL_UID', 'de069f59-3c68-43a0-a009-a96d011959b2');
 define('SUPERTORSDAG_BTN_TXT', __('Supertorsdag','mitwp'));

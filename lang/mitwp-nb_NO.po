@@ -1,17 +1,18 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: mitwp plugin\n"
-"POT-Creation-Date: 2018-09-23 20:49+0200\n"
+"POT-Creation-Date: 2018-10-03 19:47+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: TM\n"
 "Language: nb_NO\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.8.11\n"
 "X-Poedit-KeywordsList: _e;__\n"
 "X-Poedit-Basepath: ..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: mitwp.php\n"
 "X-Poedit-SearchPath-1: mitwp-import.php\n"
 "X-Poedit-SearchPath-2: mitwp-options.php\n"
@@ -20,45 +21,45 @@ msgstr ""
 
 #: mitwp-import.php:9 mitwp-options.php:7
 msgid "You do not have sufficient permissions of this site."
-msgstr "Du har ikke tilgangen du beh�ver for � bruke plugin'en."
+msgstr "Du har ikke tilgangen du behøver for å bruke plugin'en."
 
 #: mitwp-import.php:29
 msgid "DELETE"
 msgstr "SLETT"
 
-#: mitwp-import.php:48 mitwp-options.php:33
+#: mitwp-import.php:47 mitwp-options.php:33
 msgid "HOME URL : "
 msgstr "HJEMME URL : "
 
-#: mitwp-import.php:48 mitwp-options.php:33
+#: mitwp-import.php:47 mitwp-options.php:33
 msgid "USER: "
 msgstr "BRUKER: "
 
-#: mitwp-import.php:72
+#: mitwp-import.php:63
 msgid "Choose Group"
 msgstr "Velg gruppe"
 
-#: mitwp-import.php:101 mitwp-import.php:114
+#: mitwp-import.php:105 mitwp-import.php:119
 msgid "Import"
 msgstr "Importere"
 
-#: mitwp-import.php:115
+#: mitwp-import.php:120
 msgid "Exist"
 msgstr "Er importert"
 
-#: mitwp-import.php:116
+#: mitwp-import.php:121
 msgid "Title"
 msgstr "Tittel"
 
-#: mitwp-import.php:117
+#: mitwp-import.php:122
 msgid "Begins"
 msgstr "Starter"
 
-#: mitwp-import.php:118
+#: mitwp-import.php:123
 msgid "Ends"
 msgstr "Slutter"
 
-#: mitwp-import.php:119
+#: mitwp-import.php:124
 msgid "Description"
 msgstr "Beskrivelse"
 
@@ -94,17 +95,43 @@ msgstr "Tabago"
 msgid "Konfirmant"
 msgstr "Konfirmant"
 
-#: mitwp.php:81
+#: mitwp.php:44
+msgid "Treffen"
+msgstr "Treffen"
+
+#: mitwp.php:47
+msgid "Språkkafé"
+msgstr "Språkkafé"
+
+#: mitwp.php:50
+msgid "Supertorsdag"
+msgstr "Supertorsdag"
+
+#: mitwp.php:53
+msgid "Tananger Gospel"
+msgstr "Tananger Gospel"
+
+#: mitwp.php:56
+msgid "Bønnesamling"
+msgstr "Bønnesamling\t"
+
+#: mitwp.php:97
 msgid "Import iCal to WP"
 msgstr "Importere iCal til WP"
 
-#: mitwp.php:82
+#: mitwp.php:98
 msgid "Import iCal to WP - Options"
 msgstr "Importere iCal to WP - Opsjoner"
 
-#: mitwp.php:82
+#: mitwp.php:98
 msgid "Options"
 msgstr "Opsjoner"
+
+#~ msgid "Sprak Kafe"
+#~ msgstr "Språk Kafé"
+
+#~ msgid "Bonnesamling"
+#~ msgstr "Bønnesamling"
 
 #~ msgid "Exists"
 #~ msgstr "Eksisterer"
