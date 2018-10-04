@@ -60,6 +60,7 @@ define('BONNESAMLING_BTN_TXT', __('Bønnesamling','mitwp'));
 //Require once to load the php code, else it would not be found
 require_once( dirname(__FILE__) . '/mitwp-import.php' );
 require_once( dirname(__FILE__) . '/mitwp-options.php' );
+require_once( dirname(__FILE__) . '/api/mitwpapi.php');
 
 require_once( dirname(__FILE__) . '/utils.php' );
 
