@@ -55,6 +55,11 @@ define('TANANGERGOSPEL_BTN_TXT', __('Tananger Gospel','mitwp'));
 define('BONNESAMLING_ICAL_UID', '019f1ea5-222d-4309-8977-a96d011e2f13');
 define('BONNESAMLING_BTN_TXT', __('Bønnesamling','mitwp'));
 
+define('TORSDAGSLUNSJ_ICAL_UID', '7cd8e609-171d-4637-983a-a96d0119b853');
+define('TORSDAGSLUNSJ_BTN_TXT', __('Torsdagslunsj','mitwp'));
+
+define('SONDAGSSKOLE_ICAL_UID', 'ff23f4d5-c98e-403e-bfe1-a96f013432de');
+define('SONDAGSSKOLE_BTN_TXT', __('Søndagsskole','mitwp'));
 
 
 //Require once to load the php code, else it would not be found
