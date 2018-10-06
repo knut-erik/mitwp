@@ -1,5 +1,5 @@
 <?php
-
+        
 /*
  * renderHTML - Render the plugin page for handling import of iCal
  */
@@ -21,13 +21,15 @@ function renderHTML() {
         wp_enqueue_script( 'medimp_jquery');
         wp_enqueue_script( 'medimp_bootstrap_js');
 
-
+        
         //Register and enque javascript file
         wp_register_script( 'mitwp_js', plugin_dir_url(__FILE__) . 'ts/mitwp.js');
+
         // Localize javascript
         $mitwp_trans = array(
             'delete' => __( 'DELETE' , 'mitwp' ),
-            'a_value' => '10'
+            'a_value' => '10',
+            'sessioncookie' => wp_get_session_token()
         );
 
         wp_localize_script( 'mitwp_js', 'mitwptrans', $mitwp_trans );
@@ -44,14 +46,16 @@ function renderHTML() {
             <div class="row">
                 <div class="col-md-12">
                         <div class="alert alert-success">
-                            <strong><?php _e('HOME URL : ','mitwp'); echo get_home_url(); ?>&nbsp;-&nbsp;<?php _e('USER: ','mitwp'); ?>&nbsp;<?php echo wp_get_current_user()->display_name ?></strong>
+                            <strong><?php _e('REST URL : ','mitwp'); echo get_rest_url(); ?>&nbsp;-&nbsp;
+                            <?php _e('USER: ','mitwp'); ?>&nbsp;<?php echo wp_get_current_user()->display_name ?>
+                            &nbsp;-&nbsp;<?php _e('SESSION:','mitwp'); echo ' ' . wp_get_session_token() ?></strong>
                             <br>
                             <textarea readonly class="form-control" rows="4" id="log"></textarea>
                         </div>
                 </div><!-- col -->
             </div><!-- row -->
 
-            <div id="home_url" style="display: none;"><?php echo get_home_url() ?></div>
+            <div id="home_url" style="display: none;"><?php echo get_rest_url() ?></div>
             <div id="wp_user_id" style="display: none;"><?php echo get_current_user_id() ?></div>
             <div id="labora_url" style="display: none;"><?php echo constant('LABORA_URL'); ?></div>
             <div id="labora_url_params" style="display: none;"><?php echo constant('LABORA_URL_PARAMS'); ?></div>
@@ -108,7 +112,7 @@ function renderHTML() {
                             , '<?php echo constant('ARRANGEMENT_BTN_TXT'); ?>')"><?php echo constant('ARRANGEMENT_BTN_TXT'); ?></a></li>
                         </ul><!-- dropdown-menu -->
                     </div><!-- dropdown -->
-                <button type="button" id="btn_import" name="btn-start-import" class="btn btn-danger pull-left" onclick="saveImports()"><?php _e('Import','mitwp'); ?>&nbsp;<span class='glyphicon glyphicon-import'></span></button>
+                <button disabled type="button" id="btn_import" name="btn-start-import" class="btn btn-danger pull-left" onclick="saveImports()"><?php _e('Import','mitwp'); ?>&nbsp;<span class='glyphicon glyphicon-import'></span></button>
             </div> <!-- column -->
         </div><!-- ROW END -->
         <br>

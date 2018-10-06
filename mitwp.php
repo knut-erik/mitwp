@@ -75,13 +75,13 @@ register_activation_hook(__FILE__,'mitwp_install');
 /* Runs on plugin deactivation*/
 register_deactivation_hook( __FILE__, 'mitwp_remove' );
 
-
 add_action( 'init', 'mitwp_load_textdomain' );
 /**
  * Load plugin textdomain.
  */
 function mitwp_load_textdomain() {
-  load_plugin_textdomain( 'mitwp', false, dirname( plugin_basename( __FILE__ ) ) . '/lang' );   
+  load_plugin_textdomain( 'mitwp', false, dirname( plugin_basename( __FILE__ ) ) . '/lang' );
+
 }
 
 function mitwp_install() {
@@ -93,7 +93,6 @@ function mitwp_remove() {
 }
 
 if (is_admin() ){
-
 
     /* Call the code */
     add_action('admin_menu', 'mitwp_admin_menu');

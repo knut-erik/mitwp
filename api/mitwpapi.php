@@ -1,13 +1,42 @@
 <?php
-//define( 'WP_DEBUG', true);
+define( 'WP_DEBUG', true);
+
+function check_my_nonce(WP_REST_Request $request){
+
+error_log('her1');
+//error_log( print_r($request,true));
+
+$sessioncookie = $request->get_header('_cookie');
+wp_set_auth_cookie($sessioncookie,false);
+
+    
+error_log( ($check_nonce==false ? 'false' : 'true'));
+    if($check_nonce == false){
+
+        $return = Array('msg' => 'Not allowed to do this operation');
+        $response = new WP_REST_Response($return);
+        $response->header( 'Access-Control-Allow-Origin', apply_filters( 'giar_access_control_allow_origin', '*' ) );
+        $response->set_status(403);
+
+        return $response;
+    }
+
+    return $check_nonce;
+}
+
 /**
  * Register the /wp-json/tm/v1 routes
  */
 function mitwp_register_routes() {
 
-    register_rest_route( 'tm/v1', 'events', array(
+    register_rest_route( 'mitwp/v1', 'events', array(
         'methods'  => 'GET, POST, DELETE',
         'callback' => 'mitwp_serve_route',
+    ) );
+
+    register_rest_route( 'mitwp/v1', 'eventcategories', array(
+        'methods'  => 'GET, POST',
+        'callback' => 'mitwp_serve_ec_route',
     ) );
 
 }
@@ -15,9 +44,43 @@ function mitwp_register_routes() {
 /**
  * Serve all REST methods and routes accordingly
  */
+function mitwp_serve_ec_route(WP_REST_Request $request) {
+
+    $return = null;
+    
+    $check_nonce = check_my_nonce($request);
+    //if(!$check_nonce instanceof WP_REST_Request) {
+    //    return $check_nonce;
+    //};
+
+    //GET method
+    if($request->get_method()=='GET' && check_my_nonce()){
+        
+        $return = mitwp_event_get_categories();
+
+    } elseif ($request->get_method()=='POST' && check_my_nonce()){
+        
+        $return = mitwp_event_edit_categories($request->get_body());
+    }
+
+    
+    $response = new WP_REST_Response($return);
+    $response->header( 'Access-Control-Allow-Origin', apply_filters( 'giar_access_control_allow_origin', '*' ) );
+
+    return $response;
+}
+
+
+/**
+ * Serve all REST methods and routes accordingly
+ */
 function mitwp_serve_route(WP_REST_Request $request) {
 
     $return = null;
+    $check_nonce = check_my_nonce($request);
+    if($check_nonce instanceof WP_REST_Response) {
+        return $check_nonce;
+    };
 
     //GET method
     if($request->get_method()=='GET'){
@@ -60,6 +123,41 @@ function mitwp_serve_route(WP_REST_Request $request) {
     $response->header( 'Access-Control-Allow-Origin', apply_filters( 'giar_access_control_allow_origin', '*' ) );
 
     return $response;
+}
+
+function mitwp_event_get_categories() {
+    
+    $success = false;
+    $return = array('success' => $success);
+
+    
+    //$args = array('orderby' => 'name', 'order' => 'ASC', 'fields' => 'all');
+    //$categories = wp_get_object_terms(None, 'event-category', $args);
+    //$categories = get_object_taxonomies( 'event', 'names' ); 
+
+//    $categories = Array('id' => 0,  Array('uid' => 'ABCDE' , 'name' => 'Gudstjeneste') );
+  //  $categories = json_encode($categories);
+    
+    //$balle= update_option('mitwpcategories', $categories ,true);
+
+    $categories = get_option('mitwpcategories');
+    if($categories){
+        $return = $categories;
+    }
+    return $return;
+}
+
+function mitwp_event_edit_categories(string $body) {
+    error_log( print_r( $body, true ) );
+     // Get values from body_params
+    $categories = $body;
+
+//    $categories = Array('id' => 0,  Array('uid' => 'ABCDE' , 'name' => 'Gudstjeneste') );
+//    $categories = json_encode($categories);
+    $ok = update_option('mitwpcategories', $body ,true);
+    $return = array('success' => $ok);    
+    
+    return $return;
 }
 
 /**
