@@ -205,11 +205,11 @@ function setExistingCheckbox(uids, category) {
         $.ajax({
             url: restapi,
             method: 'GET',
-            contentType: 'text/plain',
+            contentType: 'application/json',
             crossDomain: true,
             xhrFields: { withCredentials: true },
             beforeSend: function (xhr) {
-                xhr.setRequestHeader('XP-MITWP-Nonce', getNonce());
+                xhr.setRequestHeader('mitwp-nonce', getNonce());
             },
             success: function (data) {
                 console.log('Status from REST API : ' + status);
@@ -235,7 +235,9 @@ function setExistingCheckbox(uids, category) {
                 disableButton("btn_choose_category", false);
                 disableButton("btn_import", false);
             },
-            error: function (jqXHR, status, errorthrown) { console.log(status + ' - ' + errorthrown); }
+            error: function (jqXHR, status, errorthrown) {
+                console.log(status + ' - ' + errorthrown + ' - ' + jqXHR.responseText);
+            }
         });
     };
     for (var i = 0; i < uids.length; i++) {

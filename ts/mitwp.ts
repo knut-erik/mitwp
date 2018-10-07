@@ -367,8 +367,6 @@ function setExistingCheckbox(uids : string[], category : string){
     for(let i=0;i < uids.length;i++){
 
             let gylphicon = 'glyphicon ';
-            //let restapi = apiurl + "?uid=" + uids[i] +"&category=" + category;
-
             let summary = $("#imp_summary_"+uids[i]+ " span").text();
             let dtstart = $("#imp_dtstart_utc_"+uids[i]).text();
             let dtend = $("#imp_dtend_utc_"+uids[i]).text();    
@@ -379,11 +377,11 @@ function setExistingCheckbox(uids : string[], category : string){
             $.ajax({
                 url: restapi,
                 method: 'GET',
-                contentType: 'text/plain',
+                contentType: 'application/json',
                 crossDomain: true,
                 xhrFields:{withCredentials: true},
                 beforeSend: function(xhr){
-                    xhr.setRequestHeader('XP-MITWP-Nonce', getNonce());
+                    xhr.setRequestHeader('mitwp-nonce', getNonce());
                 },
                 success: function(data){
 
@@ -416,7 +414,9 @@ function setExistingCheckbox(uids : string[], category : string){
                     disableButton("btn_import",false);    
 
                 },
-                error: function(jqXHR, status, errorthrown ){ console.log(status + ' - ' + errorthrown); }
+                error: function(jqXHR, status, errorthrown ){ 
+                    console.log(status + ' - ' + errorthrown + ' - ' + jqXHR.responseText); 
+                }
             })
 
 /*            let request = jQuery.get(restapi, function(data, status){

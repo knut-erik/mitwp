@@ -5,17 +5,19 @@ function check_my_nonce(WP_REST_Request $request){
 
     //Get the nonce passed by from the client
     //Verify the nonce through the WP function
-    $nonce = $request->get_header('XP-MITWP-Nonce');
+error_log('her er jeg ');
+    $nonce = $request->get_header('mitwp-nonce');
+error_log('nonce is ' . $nonce);
     $validnonce = wp_verify_nonce($nonce);
     
-//error_log( ($validnonce==false ? 'false' : 'true'));
+error_log( 'validnonce is ' . ($validnonce==false ? 'false' : 'true') );
     if($validnonce == false){
 
-        $return = Array('msg' => 'Not allowed to do this operation');
+        $return = Array('error' => 'Not a valid WP nonce!');
+        $return = json_encode($return);
         $response = new WP_REST_Response($return);
         $response->header( 'Access-Control-Allow-Origin', apply_filters( 'giar_access_control_allow_origin', '*' ) );
         $response->set_status(403);
-
         return $response;
     }
 
@@ -72,9 +74,12 @@ function mitwp_serve_route(WP_REST_Request $request) {
 
     $return = null;
     $check_nonce = check_my_nonce($request);
-    if($check_nonce instanceof WP_REST_Response) {
+
+    //If the check returns a WP_REST_Response it's not a valid nonce.
+    if($check_nonce instanceof WP_REST_Response){
         return $check_nonce;
-    };
+    }
+
 
     //GET method
     if($request->get_method()=='GET'){
