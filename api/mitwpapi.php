@@ -1,19 +1,19 @@
 <?php
 define( 'WP_DEBUG', true);
 
-function check_my_nonce(WP_REST_Request $request){
+/**
+* Checking WordPress nonce passed in the header.
+* Nonce created on by the plugin. Unique ID for that session only.
+*/
+function check_seckey(WP_REST_Request $request){
 
-    //Get the nonce passed by from the client
-    //Verify the nonce through the WP function
-error_log('her er jeg ');
-    $nonce = $request->get_header('mitwp-nonce');
-error_log('nonce is ' . $nonce);
-    $validnonce = wp_verify_nonce($nonce);
-    
-error_log( 'validnonce is ' . ($validnonce==false ? 'false' : 'true') );
-    if($validnonce == false){
+    //Get the securekey passed by from the client
+    //Verify the key through the WP function
+    $securekey = $request->get_header('mitwp-key');
+    $validkey =  ($securekey ==  ( CONSTANT('SECURE_AUTH_KEY') . CONSTANT('LOGGED_IN_KEY') ));
 
-        $return = Array('error' => 'Not a valid WP nonce!');
+    if($validkey == false){
+        $return = Array('error' => 'Not a valid mitwp-key!');
         $return = json_encode($return);
         $response = new WP_REST_Response($return);
         $response->header( 'Access-Control-Allow-Origin', apply_filters( 'giar_access_control_allow_origin', '*' ) );
@@ -21,7 +21,7 @@ error_log( 'validnonce is ' . ($validnonce==false ? 'false' : 'true') );
         return $response;
     }
 
-    return $validnonce;
+    return $validkey;
 }
 
 /**
@@ -47,14 +47,19 @@ function mitwp_register_routes() {
 function mitwp_serve_ec_route(WP_REST_Request $request) {
 
     $return = null;
-    $check_nonce = check_my_nonce($request);
+    $checkkey = check_seckey($request);
+
+    //If the check returns a WP_REST_Response it's not a valid key.
+    if($checkkey instanceof WP_REST_Response){
+        return $checkkey;
+    }
   
     //GET method
-    if($request->get_method()=='GET' && check_my_nonce()){
+    if($request->get_method()=='GET'){
         
         $return = mitwp_event_get_categories();
 
-    } elseif ($request->get_method()=='POST' && check_my_nonce()){
+    } elseif ($request->get_method()=='POST'){
         
         $return = mitwp_event_edit_categories($request->get_body());
     }
@@ -73,11 +78,11 @@ function mitwp_serve_ec_route(WP_REST_Request $request) {
 function mitwp_serve_route(WP_REST_Request $request) {
 
     $return = null;
-    $check_nonce = check_my_nonce($request);
+    $checkkey = check_seckey($request);
 
-    //If the check returns a WP_REST_Response it's not a valid nonce.
-    if($check_nonce instanceof WP_REST_Response){
-        return $check_nonce;
+    //If the check returns a WP_REST_Response it's not a valid key.
+    if($checkkey instanceof WP_REST_Response){
+        return $checkkey;
     }
 
 
@@ -147,6 +152,9 @@ function mitwp_event_get_categories() {
 }
 
 function mitwp_event_edit_categories(string $body) {
+   
+    $checkkey = check_seckey($request);
+
     error_log( print_r( $body, true ) );
      // Get values from body_params
     $categories = $body;
@@ -227,7 +235,7 @@ function mitwp_event_import(array $body_params) {
         )
     );
     
-    error_log(json_encode($my_post, JSON_PRETTY_PRINT));
+
     //Prevent mocking with html
     //kses_remove_filters();
 

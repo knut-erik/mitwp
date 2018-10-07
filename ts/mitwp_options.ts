@@ -1,7 +1,13 @@
 //Import jquery TS
 import * as jQuery from 'jquery';
 
+//Contains translated strings fired off at the wp side
+//Transferd as this variable
+let mitwpoptiontrans : any;
 
+function getSecKey() : string {
+    return mitwpoptiontrans.seckey;
+}
 
 
 /**
@@ -10,19 +16,26 @@ import * as jQuery from 'jquery';
  */
 function test() {
         
-    jQuery.get('http://localhost:8080/wp-json/mitwp/v1/eventcategories', function(categories : string, status : string){
-
-    let cats = JSON.parse(categories);
-    console.log(cats);
+    $.ajax({
+            url: 'http://localhost:8080/wp-json/mitwp/v1/eventcategories',
+            method: 'GET',
+            contentType: 'application/json',
+            //crossDomain: true,
+        // xhrFields:{withCredentials: true},
+            beforeSend: function(xhr){
+                xhr.setRequestHeader('mitwp-key', getSecKey());
+            },
+            success: function(categories : string){
+                let cats = JSON.parse(categories);
+                console.log(cats);
+                
+                for(let i = 0; i<categories.length; i++){
+                    
+                    console.log(cats[i].name);
+                
+                }
+                }
     
-    for(let i = 0; i<categories.length; i++){
-        
-        console.log(cats[i].name);
-    
-    }
-
-//alert(cats[0].name);
-
     });
 
 

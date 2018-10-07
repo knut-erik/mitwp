@@ -10,8 +10,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var jQuery = __importStar(require("jquery"));
 var ICAL;
 var mitwptrans;
-function getNonce() {
-    return mitwptrans.nonce;
+function getSecKey() {
+    return mitwptrans.seckey;
 }
 function sortList(id) {
     var html = $("#" + id);
@@ -71,6 +71,9 @@ function deleteFromWP(rowuid) {
     $.ajax({
         url: restapi,
         type: 'DELETE',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('mitwp-key', getSecKey());
+        },
         success: function (result) {
             result = JSON.parse(result);
             if (result.success = 'true') {
@@ -118,14 +121,25 @@ function saveImports() {
             log_info('IMPORTING TO WP : ' + post_data.event_summary + ' - '
                 + new Date(post_data.dtstart).toLocaleString() + ' - '
                 + new Date(post_data.dtend).toLocaleString());
-            jQuery.post(apiurl, post_data, function (data, status) {
-                disableButton("btn_choose_category", true);
-                disableButton("btn_import", true);
-                data = JSON.parse(data);
-                setExistingCheckbox(Array(data.uid), data.category);
-                disableButton("btn_choose_category", false);
-                disableButton("btn_import", false);
-            }, 'json');
+            $.ajax({
+                url: apiurl,
+                data: post_data,
+                method: 'POST',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('mitwp-key', getSecKey());
+                },
+                success: function (data) {
+                    disableButton("btn_choose_category", true);
+                    disableButton("btn_import", true);
+                    data = JSON.parse(data);
+                    setExistingCheckbox(Array(data.uid), data.category);
+                    disableButton("btn_choose_category", false);
+                    disableButton("btn_import", false);
+                },
+                error: function (jqXHR, status, errorthrown) {
+                    console.log(status + ' - ' + errorthrown + ' - ' + jqXHR.responseText);
+                }
+            });
         }
     }
 }
@@ -206,10 +220,8 @@ function setExistingCheckbox(uids, category) {
             url: restapi,
             method: 'GET',
             contentType: 'application/json',
-            crossDomain: true,
-            xhrFields: { withCredentials: true },
             beforeSend: function (xhr) {
-                xhr.setRequestHeader('mitwp-nonce', getNonce());
+                xhr.setRequestHeader('mitwp-key', getSecKey());
             },
             success: function (data) {
                 console.log('Status from REST API : ' + status);

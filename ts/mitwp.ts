@@ -8,8 +8,8 @@ let ICAL : any;
 //Transferd as this variable
 let mitwptrans : any;
 
-function getNonce() : string {
-    return mitwptrans.nonce;
+function getSecKey() : string {
+    return mitwptrans.seckey;
 }
 
 /**
@@ -138,7 +138,10 @@ function deleteFromWP(rowuid : string){
     
     $.ajax({
         url: restapi,
-        type: 'DELETE',        
+        type: 'DELETE',
+        beforeSend: function(xhr){
+            xhr.setRequestHeader('mitwp-key', getSecKey());
+        },       
         success: function(result) {
             // Do something with the result
             result = JSON.parse(result);
@@ -213,24 +216,35 @@ function saveImports(){
 
 
         if(importOrNot){
-            log_info('IMPORTING TO WP : ' + post_data.event_summary+' - ' 
+                log_info('IMPORTING TO WP : ' + post_data.event_summary+' - ' 
                 + new Date(post_data.dtstart).toLocaleString() +' - ' 
                 + new Date(post_data.dtend).toLocaleString());
-            
-            //Fire off a post (REST API) insert/update data
-            jQuery.post(apiurl, post_data, function(data, status){
-                //Disable buttons
-                disableButton("btn_choose_category",true);
-                disableButton("btn_import",true);
-
-                //Parse string to JSON object
-                data = JSON.parse(data);
-
-                //Set exists checkbox and enable buttons
-                setExistingCheckbox( Array(data.uid), data.category);
-                disableButton("btn_choose_category",false);
-                disableButton("btn_import",false);
-            },'json');
+                    $.ajax({
+                            url: apiurl,
+                            data: post_data,
+                            method: 'POST',
+                            //crossDomain: true,
+                            //xhrFields:{withCredentials: true},
+                            beforeSend: function(xhr){
+                                xhr.setRequestHeader('mitwp-key', getSecKey());
+                            },
+                            success: function(data){
+                                //Disable buttons
+                                disableButton("btn_choose_category",true);
+                                disableButton("btn_import",true);
+                
+                                //Parse string to JSON object
+                                data = JSON.parse(data);
+                
+                                //Set exists checkbox and enable buttons
+                                setExistingCheckbox( Array(data.uid), data.category);
+                                disableButton("btn_choose_category",false);
+                                disableButton("btn_import",false);
+                        },
+                        error: function(jqXHR, status, errorthrown ){ 
+                            console.log(status + ' - ' + errorthrown + ' - ' + jqXHR.responseText); 
+                        }
+                    });
         }
     }//End loop
 }
@@ -378,10 +392,10 @@ function setExistingCheckbox(uids : string[], category : string){
                 url: restapi,
                 method: 'GET',
                 contentType: 'application/json',
-                crossDomain: true,
-                xhrFields:{withCredentials: true},
+                //crossDomain: true,
+               // xhrFields:{withCredentials: true},
                 beforeSend: function(xhr){
-                    xhr.setRequestHeader('mitwp-nonce', getNonce());
+                    xhr.setRequestHeader('mitwp-key', getSecKey());
                 },
                 success: function(data){
 
@@ -418,36 +432,6 @@ function setExistingCheckbox(uids : string[], category : string){
                     console.log(status + ' - ' + errorthrown + ' - ' + jqXHR.responseText); 
                 }
             })
-
-/*            let request = jQuery.get(restapi, function(data, status){
-                console.log('Status from REST API : ' + status);
-                //Parse JSON string into object
-                data = JSON.parse(data);
-
-                disableButton("btn_choose_category",true);
-                disableButton("btn_import",true);        
-    
-                let chkExists = false;
-                if( parseInt(data.found) == 1){
-                        chkExists = true;
-                        gylphicon += 'glyphicon-thumbs-up';
-                        $('#row_' + data.uid ).prop('class', 'success');
-                        $('#imp_wpid_' + data.uid ).text(data.post_id);
-
-                }else{
-                        //Clear the success flag and the Wordpress Post ID
-                        $('#row_' + data.uid).prop('class', '');
-                        $('#imp_wpid_' + data.uid).text('');
-                        gylphicon += 'glyphicon-thumbs-down';
-                }
-            $('#exists_' + data.uid ).prop('checked', chkExists);
-            $('#imp_exists_icon_' + data.uid ).prop('class', gylphicon);
-            disableButton("delete_wpid_" + data.uid,!chkExists);
-            $('#import_' + data.uid ).prop('checked', !chkExists); //Enable import because it doesn't exist
-            
-            disableButton("btn_choose_category",false);
-            disableButton("btn_import",false);            
-        });*/
     }
 
 }

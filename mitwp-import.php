@@ -1,5 +1,5 @@
 <?php
-        
+  
 /*
  * renderHTML - Render the plugin page for handling import of iCal
  */
@@ -24,17 +24,23 @@ function renderHTML() {
         
         //Register and enque javascript file
         wp_register_script( 'mitwp_js', plugin_dir_url(__FILE__) . 'ts/mitwp.js');
+        wp_register_script( 'mitwp_options_js', plugin_dir_url(__FILE__) . 'ts/mitwp_options.js');
 
-        $nonce = wp_create_nonce('mitwp-import');
+        //Use this to verify ajax from plugin
+        $seckey =   CONSTANT('SECURE_AUTH_KEY') . CONSTANT('LOGGED_IN_KEY');
         // Localize javascript
         $mitwp_trans = array(
             'delete' => __( 'DELETE' , 'mitwp' ),
             'a_value' => '10',
-            'nonce' => $nonce
+            'seckey' => $seckey
         );
-
+        $mitwp_option_trans = array(
+            'seckey' => $seckey
+        );
         wp_localize_script( 'mitwp_js', 'mitwptrans', $mitwp_trans );
+        wp_localize_script( 'mitwp_options_js', 'mitwpoptiontrans', $mitwp_option_trans );
         wp_enqueue_script('mitwp_js', plugin_dir_url(__FILE__) . 'ts/mitwp.js');
+        wp_enqueue_script('mitwp_options_js', plugin_dir_url(__FILE__) . 'ts/mitwp_options.js');
 
         wp_register_script('ical_js', plugin_dir_url(__FILE__) . 'js/ical.min.js');
         wp_enqueue_script('ical_js', plugin_dir_url(__FILE__) . 'js/ical.min.js');
@@ -48,8 +54,7 @@ function renderHTML() {
                 <div class="col-md-12">
                         <div class="alert alert-success">
                             <strong><?php _e('REST URL : ','mitwp'); echo get_rest_url(); ?>&nbsp;-&nbsp;
-                            <?php _e('USER: ','mitwp'); ?>&nbsp;<?php echo wp_get_current_user()->display_name ?>
-                            &nbsp;-&nbsp;<?php _e('NONCE:','mitwp'); echo ' ' . $nonce ?></strong>
+                            <?php _e('USER: ','mitwp'); ?>&nbsp;<?php echo wp_get_current_user()->display_name ?></strong>
                             <br>
                             <textarea readonly class="form-control" rows="4" id="log"></textarea>
                         </div>

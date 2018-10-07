@@ -33,14 +33,15 @@ function optionsHTML() {
     -->
     <div class="container-fluid">
         <div class="alert alert-success">
-            <strong><?php _e('REST URL : ','mitwp'); echo get_rest_url(); ?>&nbsp;-&nbsp;<?php _e('USER: ','mitwp'); ?>&nbsp;<?php echo wp_get_current_user()->display_name ?></strong>
+            <strong><?php _e('REST URL : ','mitwp'); echo get_rest_url(); ?>&nbsp;-&nbsp;<?php _e('USER: ','mitwp'); ?>
+            &nbsp;<?php echo wp_get_current_user()->display_name ?></strong>
         </div>
         
         <p>Not in use - for the future.</p>
-        <button onClick="test();">abc</button>
+       <!-- <button onClick="test();">abc</button> -->
 
     </div>
-    <script>$(document).ready( function(){console.log('ok');} )</script>
+    
 
 <?php
 
