@@ -20,6 +20,9 @@ function optionsHTML() {
     wp_enqueue_script( 'medimp_jquery');
     wp_enqueue_script( 'medimp_bootstrap_js');
 
+    wp_register_script( 'mitwp_options_js', plugin_dir_url(__FILE__) . 'ts/mitwp_options.js');
+    wp_enqueue_script('mitwp_options_js', plugin_dir_url(__FILE__) . 'ts/mitwp_options.js');
+
 
 ?>
     <!--
@@ -30,11 +33,15 @@ function optionsHTML() {
     -->
     <div class="container-fluid">
         <div class="alert alert-success">
-            <strong><?php _e('HOME URL : ','mitwp'); echo get_home_url(); ?>&nbsp;-&nbsp;<?php _e('USER: ','mitwp'); ?>&nbsp;<?php echo wp_get_current_user()->display_name ?></strong>
+            <strong><?php _e('REST URL : ','mitwp'); echo get_rest_url(); ?>&nbsp;-&nbsp;<?php _e('USER: ','mitwp'); ?>
+            &nbsp;<?php echo wp_get_current_user()->display_name ?></strong>
         </div>
+        
         <p>Not in use - for the future.</p>
-    </div>
+       <!-- <button onClick="test();">abc</button> -->
 
+    </div>
+    
 
 <?php
 

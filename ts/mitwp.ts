@@ -8,6 +8,9 @@ let ICAL : any;
 //Transferd as this variable
 let mitwptrans : any;
 
+function getSecKey() : string {
+    return mitwptrans.seckey;
+}
 
 /**
  * 
@@ -69,10 +72,10 @@ function log_info(info : string){
  * @param {string} [info] - Text which should be logged to the <div id='log'>
  * @returns {string} - The url to the REST API
  */
-function get_api_url() : string {
+function getApiUrl() : string {
     
     let apiurl = $("#home_url").text();
-    apiurl += "/wp-json/tm/v1/events/";
+    apiurl += "/mitwp/v1/events/";    
     return apiurl;
 }
 
@@ -126,7 +129,7 @@ function getiCalFromUrl(urlUID : string, category : string){
  */
 function deleteFromWP(rowuid : string){
     
-    let restapi = get_api_url();
+    let restapi = getApiUrl();
     let postid = $("#imp_wpid_"+rowuid).text();
     let category = $("#imp_data_category_"+rowuid+ " span").text();
 
@@ -135,8 +138,10 @@ function deleteFromWP(rowuid : string){
     
     $.ajax({
         url: restapi,
-        type: 'DELETE'        
-        ,
+        type: 'DELETE',
+        beforeSend: function(xhr){
+            xhr.setRequestHeader('mitwp-key', getSecKey());
+        },       
         success: function(result) {
             // Do something with the result
             result = JSON.parse(result);
@@ -170,7 +175,7 @@ function deleteFromWP(rowuid : string){
  */
 function saveImports(){
 
-    let apiurl = get_api_url();
+    let apiurl = getApiUrl();
 
     //run through each row - Slice will select form 0 to the end.
     let rows = $("tbody#imp_table_body tr").slice(0);    
@@ -211,24 +216,35 @@ function saveImports(){
 
 
         if(importOrNot){
-            log_info('IMPORTING TO WP : ' + post_data.event_summary+' - ' 
+                log_info('IMPORTING TO WP : ' + post_data.event_summary+' - ' 
                 + new Date(post_data.dtstart).toLocaleString() +' - ' 
                 + new Date(post_data.dtend).toLocaleString());
-
-            //Fire off a post (REST API) insert/update data
-            jQuery.post(apiurl, post_data, function(data, status){
-                //Disable buttons
-                disableButton("btn_choose_category",true);
-                disableButton("btn_import",true);
-
-                //Parse string to JSON object
-                data = JSON.parse(data);
-
-                //Set exists checkbox and enable buttons
-                setExistingCheckbox( Array(data.uid), data.category);
-                disableButton("btn_choose_category",false);
-                disableButton("btn_import",false);
-            },'json');
+                    $.ajax({
+                            url: apiurl,
+                            data: post_data,
+                            method: 'POST',
+                            //crossDomain: true,
+                            //xhrFields:{withCredentials: true},
+                            beforeSend: function(xhr){
+                                xhr.setRequestHeader('mitwp-key', getSecKey());
+                            },
+                            success: function(data){
+                                //Disable buttons
+                                disableButton("btn_choose_category",true);
+                                disableButton("btn_import",true);
+                
+                                //Parse string to JSON object
+                                data = JSON.parse(data);
+                
+                                //Set exists checkbox and enable buttons
+                                setExistingCheckbox( Array(data.uid), data.category);
+                                disableButton("btn_choose_category",false);
+                                disableButton("btn_import",false);
+                        },
+                        error: function(jqXHR, status, errorthrown ){ 
+                            console.log(status + ' - ' + errorthrown + ' - ' + jqXHR.responseText); 
+                        }
+                    });
         }
     }//End loop
 }
@@ -277,29 +293,26 @@ function getICalTable(iCalAsString : string, category : string): [string[], stri
     let allSubComponents = vcalendar.getAllSubcomponents('vevent');
 
     //Sort events
-    //Sorting by using DTSTART time (parsing)
-    //FIXME: Jikes ... this is fragile
     allSubComponents.sort(
         function(a : Object [] ,b : Object []){
+            //Use iCals DTSTART property for comparing
+            //The start date of an event.
+            let dtstart_a = (<any>a).getFirstPropertyValue('dtstart');
+            let dtstart_b = (<any>b).getFirstPropertyValue('dtstart');
 
-            //convert to string
-            let eventa = a.toString();
-            let eventb = b.toString();
-
-            //DTSTART;TZID=W. Europe Standard Time:20181005T180000
-            //LOCATION
-            let toindex = eventa.indexOf(":", eventa.indexOf("DTSTART;"));
-            let firstDateAsNumber = eventa.substring(toindex+1,toindex+9);
-
-            toindex = eventb.indexOf(":", eventb.indexOf("DTSTART;"));
-            let secondDateAsNumber = eventb.substring(toindex+1,toindex+9);
+            let date_a : Date = new Date(dtstart_a);
+            let date_b : Date = new Date(dtstart_b);
             
-            return (firstDateAsNumber>secondDateAsNumber);
+            //Convert time to numbers
+            let testa : number = Math.round(date_a.getTime()/1000);
+            let testb : number = Math.round(date_b.getTime()/1000);
+
+            return (testa - testb);
         }
     );
 
     let tblHTML = "";
-    let uids : any = [];  //TODO: FORDI JEG IKKE HAR ICAL DEFENISJONEN
+    let uids : any = [];  //TODO: Do this in typescript, due to no types/ical definision module.
 
     //Loop through subcomponents
     for (let i=0; i<allSubComponents.length; i++) {
@@ -359,7 +372,7 @@ function getICalTable(iCalAsString : string, category : string): [string[], stri
  */
 function setExistingCheckbox(uids : string[], category : string){
 
-    let apiurl = get_api_url();    
+    let apiurl = getApiUrl();    
 
     disableButton("btn_choose_category",true);
     disableButton("btn_import",true);
@@ -368,44 +381,57 @@ function setExistingCheckbox(uids : string[], category : string){
     for(let i=0;i < uids.length;i++){
 
             let gylphicon = 'glyphicon ';
-            //let restapi = apiurl + "?uid=" + uids[i] +"&category=" + category;
-
             let summary = $("#imp_summary_"+uids[i]+ " span").text();
             let dtstart = $("#imp_dtstart_utc_"+uids[i]).text();
             let dtend = $("#imp_dtend_utc_"+uids[i]).text();    
             let restapi = apiurl + "?uid=" + uids[i] +"&category=" + category + "&dtstart="+ dtstart + "&dtend=" + dtend + "&title="+summary;
-
-            //Call the REST API
-            jQuery.get(restapi, function(data, status){
-
-                //Parse JSON string into object
-                data = JSON.parse(data);
-
-                disableButton("btn_choose_category",true);
-                disableButton("btn_import",true);        
-    
-                let chkExists = false;
-                if( parseInt(data.found) == 1){
-                        chkExists = true;
-                        gylphicon += 'glyphicon-thumbs-up';
-                        $('#row_' + data.uid ).prop('class', 'success');
-                        $('#imp_wpid_' + data.uid ).text(data.post_id);
-
-                }else{
-                        //Clear the success flag and the Wordpress Post ID
-                        $('#row_' + data.uid).prop('class', '');
-                        $('#imp_wpid_' + data.uid).text('');
-                        gylphicon += 'glyphicon-thumbs-down';
-                }
-            $('#exists_' + data.uid ).prop('checked', chkExists);
-            $('#imp_exists_icon_' + data.uid ).prop('class', gylphicon);
-            disableButton("delete_wpid_" + data.uid,!chkExists);
-            $('#import_' + data.uid ).prop('checked', !chkExists); //Enable import because it doesn't exist
-
             
-            disableButton("btn_choose_category",false);
-            disableButton("btn_import",false);
-        });
+            
+            //Call the REST API
+            $.ajax({
+                url: restapi,
+                method: 'GET',
+                contentType: 'application/json',
+                //crossDomain: true,
+               // xhrFields:{withCredentials: true},
+                beforeSend: function(xhr){
+                    xhr.setRequestHeader('mitwp-key', getSecKey());
+                },
+                success: function(data){
+
+                    console.log('Status from REST API : ' + status);
+                    //Parse JSON string into object
+                    data = JSON.parse(data);
+    
+                    disableButton("btn_choose_category",true);
+                    disableButton("btn_import",true);        
+        
+                    let chkExists = false;
+                    if( parseInt(data.found) == 1){
+                            chkExists = true;
+                            gylphicon += 'glyphicon-thumbs-up';
+                            $('#row_' + data.uid ).prop('class', 'success');
+                            $('#imp_wpid_' + data.uid ).text(data.post_id);
+    
+                    }else{
+                            //Clear the success flag and the Wordpress Post ID
+                            $('#row_' + data.uid).prop('class', '');
+                            $('#imp_wpid_' + data.uid).text('');
+                            gylphicon += 'glyphicon-thumbs-down';
+                    }
+                    $('#exists_' + data.uid ).prop('checked', chkExists);
+                    $('#imp_exists_icon_' + data.uid ).prop('class', gylphicon);
+                    disableButton("delete_wpid_" + data.uid,!chkExists);
+                    $('#import_' + data.uid ).prop('checked', !chkExists); //Enable import because it doesn't exist
+                    
+                    disableButton("btn_choose_category",false);
+                    disableButton("btn_import",false);    
+
+                },
+                error: function(jqXHR, status, errorthrown ){ 
+                    console.log(status + ' - ' + errorthrown + ' - ' + jqXHR.responseText); 
+                }
+            })
     }
 
 }

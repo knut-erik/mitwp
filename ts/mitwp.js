@@ -10,6 +10,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var jQuery = __importStar(require("jquery"));
 var ICAL;
 var mitwptrans;
+function getSecKey() {
+    return mitwptrans.seckey;
+}
 function sortList(id) {
     var html = $("#" + id);
     var htmlLi = $("#" + id + " li");
@@ -36,9 +39,9 @@ function log_info(info) {
     }
     textArea.scrollTop(textArea[0].scrollHeight);
 }
-function get_api_url() {
+function getApiUrl() {
     var apiurl = $("#home_url").text();
-    apiurl += "/wp-json/tm/v1/events/";
+    apiurl += "/mitwp/v1/events/";
     return apiurl;
 }
 function disableButton(buttonID, disable) {
@@ -61,13 +64,16 @@ function getiCalFromUrl(urlUID, category) {
     });
 }
 function deleteFromWP(rowuid) {
-    var restapi = get_api_url();
+    var restapi = getApiUrl();
     var postid = $("#imp_wpid_" + rowuid).text();
     var category = $("#imp_data_category_" + rowuid + " span").text();
     restapi += "?postid=" + postid + "&category=" + category;
     $.ajax({
         url: restapi,
         type: 'DELETE',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader('mitwp-key', getSecKey());
+        },
         success: function (result) {
             result = JSON.parse(result);
             if (result.success = 'true') {
@@ -84,7 +90,7 @@ function deleteFromWP(rowuid) {
     });
 }
 function saveImports() {
-    var apiurl = get_api_url();
+    var apiurl = getApiUrl();
     var rows = $("tbody#imp_table_body tr").slice(0);
     for (var i = 0; i < rows.length; i++) {
         var rowUid = rows[i]['id'].slice(4);
@@ -115,14 +121,25 @@ function saveImports() {
             log_info('IMPORTING TO WP : ' + post_data.event_summary + ' - '
                 + new Date(post_data.dtstart).toLocaleString() + ' - '
                 + new Date(post_data.dtend).toLocaleString());
-            jQuery.post(apiurl, post_data, function (data, status) {
-                disableButton("btn_choose_category", true);
-                disableButton("btn_import", true);
-                data = JSON.parse(data);
-                setExistingCheckbox(Array(data.uid), data.category);
-                disableButton("btn_choose_category", false);
-                disableButton("btn_import", false);
-            }, 'json');
+            $.ajax({
+                url: apiurl,
+                data: post_data,
+                method: 'POST',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('mitwp-key', getSecKey());
+                },
+                success: function (data) {
+                    disableButton("btn_choose_category", true);
+                    disableButton("btn_import", true);
+                    data = JSON.parse(data);
+                    setExistingCheckbox(Array(data.uid), data.category);
+                    disableButton("btn_choose_category", false);
+                    disableButton("btn_import", false);
+                },
+                error: function (jqXHR, status, errorthrown) {
+                    console.log(status + ' - ' + errorthrown + ' - ' + jqXHR.responseText);
+                }
+            });
         }
     }
 }
@@ -143,13 +160,13 @@ function getICalTable(iCalAsString, category) {
     var vcalendar = new ICAL.Component(jcalData);
     var allSubComponents = vcalendar.getAllSubcomponents('vevent');
     allSubComponents.sort(function (a, b) {
-        var eventa = a.toString();
-        var eventb = b.toString();
-        var toindex = eventa.indexOf(":", eventa.indexOf("DTSTART;"));
-        var firstDateAsNumber = eventa.substring(toindex + 1, toindex + 9);
-        toindex = eventb.indexOf(":", eventb.indexOf("DTSTART;"));
-        var secondDateAsNumber = eventb.substring(toindex + 1, toindex + 9);
-        return (firstDateAsNumber > secondDateAsNumber);
+        var dtstart_a = a.getFirstPropertyValue('dtstart');
+        var dtstart_b = b.getFirstPropertyValue('dtstart');
+        var date_a = new Date(dtstart_a);
+        var date_b = new Date(dtstart_b);
+        var testa = Math.round(date_a.getTime() / 1000);
+        var testb = Math.round(date_b.getTime() / 1000);
+        return (testa - testb);
     });
     var tblHTML = "";
     var uids = [];
@@ -189,7 +206,7 @@ function getICalTable(iCalAsString, category) {
     return [uids, tblHTML];
 }
 function setExistingCheckbox(uids, category) {
-    var apiurl = get_api_url();
+    var apiurl = getApiUrl();
     disableButton("btn_choose_category", true);
     disableButton("btn_import", true);
     log_info('Check if posts exists in WP - if so mark the rows');
@@ -199,28 +216,40 @@ function setExistingCheckbox(uids, category) {
         var dtstart = $("#imp_dtstart_utc_" + uids[i]).text();
         var dtend = $("#imp_dtend_utc_" + uids[i]).text();
         var restapi = apiurl + "?uid=" + uids[i] + "&category=" + category + "&dtstart=" + dtstart + "&dtend=" + dtend + "&title=" + summary;
-        jQuery.get(restapi, function (data, status) {
-            data = JSON.parse(data);
-            disableButton("btn_choose_category", true);
-            disableButton("btn_import", true);
-            var chkExists = false;
-            if (parseInt(data.found) == 1) {
-                chkExists = true;
-                gylphicon += 'glyphicon-thumbs-up';
-                $('#row_' + data.uid).prop('class', 'success');
-                $('#imp_wpid_' + data.uid).text(data.post_id);
+        $.ajax({
+            url: restapi,
+            method: 'GET',
+            contentType: 'application/json',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader('mitwp-key', getSecKey());
+            },
+            success: function (data) {
+                console.log('Status from REST API : ' + status);
+                data = JSON.parse(data);
+                disableButton("btn_choose_category", true);
+                disableButton("btn_import", true);
+                var chkExists = false;
+                if (parseInt(data.found) == 1) {
+                    chkExists = true;
+                    gylphicon += 'glyphicon-thumbs-up';
+                    $('#row_' + data.uid).prop('class', 'success');
+                    $('#imp_wpid_' + data.uid).text(data.post_id);
+                }
+                else {
+                    $('#row_' + data.uid).prop('class', '');
+                    $('#imp_wpid_' + data.uid).text('');
+                    gylphicon += 'glyphicon-thumbs-down';
+                }
+                $('#exists_' + data.uid).prop('checked', chkExists);
+                $('#imp_exists_icon_' + data.uid).prop('class', gylphicon);
+                disableButton("delete_wpid_" + data.uid, !chkExists);
+                $('#import_' + data.uid).prop('checked', !chkExists);
+                disableButton("btn_choose_category", false);
+                disableButton("btn_import", false);
+            },
+            error: function (jqXHR, status, errorthrown) {
+                console.log(status + ' - ' + errorthrown + ' - ' + jqXHR.responseText);
             }
-            else {
-                $('#row_' + data.uid).prop('class', '');
-                $('#imp_wpid_' + data.uid).text('');
-                gylphicon += 'glyphicon-thumbs-down';
-            }
-            $('#exists_' + data.uid).prop('checked', chkExists);
-            $('#imp_exists_icon_' + data.uid).prop('class', gylphicon);
-            disableButton("delete_wpid_" + data.uid, !chkExists);
-            $('#import_' + data.uid).prop('checked', !chkExists);
-            disableButton("btn_choose_category", false);
-            disableButton("btn_import", false);
         });
     };
     for (var i = 0; i < uids.length; i++) {

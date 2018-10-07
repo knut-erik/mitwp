@@ -1,13 +1,42 @@
 <?php
 //define( 'WP_DEBUG', true);
+
+/**
+* Checking WordPress nonce passed in the header.
+* Nonce created on by the plugin. Unique ID for that session only.
+*/
+function check_seckey(WP_REST_Request $request){
+
+    //Get the securekey passed by from the client
+    //Verify the key through the WP function
+    $securekey = $request->get_header('mitwp-key');
+    $validkey =  ($securekey ==  ( CONSTANT('SECURE_AUTH_KEY') . CONSTANT('LOGGED_IN_KEY') ));
+
+    if($validkey == false){
+        $return = Array('error' => 'Not a valid mitwp-key!');
+        $return = json_encode($return);
+        $response = new WP_REST_Response($return);
+        $response->header( 'Access-Control-Allow-Origin', apply_filters( 'giar_access_control_allow_origin', '*' ) );
+        $response->set_status(403);
+        return $response;
+    }
+
+    return $validkey;
+}
+
 /**
  * Register the /wp-json/tm/v1 routes
  */
 function mitwp_register_routes() {
 
-    register_rest_route( 'tm/v1', 'events', array(
+    register_rest_route( 'mitwp/v1', 'events', array(
         'methods'  => 'GET, POST, DELETE',
         'callback' => 'mitwp_serve_route',
+    ) );
+
+    register_rest_route( 'mitwp/v1', 'eventcategories', array(
+        'methods'  => 'GET, POST',
+        'callback' => 'mitwp_serve_ec_route',
     ) );
 
 }
@@ -15,9 +44,47 @@ function mitwp_register_routes() {
 /**
  * Serve all REST methods and routes accordingly
  */
+function mitwp_serve_ec_route(WP_REST_Request $request) {
+
+    $return = null;
+    $checkkey = check_seckey($request);
+
+    //If the check returns a WP_REST_Response it's not a valid key.
+    if($checkkey instanceof WP_REST_Response){
+        return $checkkey;
+    }
+  
+    //GET method
+    if($request->get_method()=='GET'){
+        
+        $return = mitwp_event_get_categories();
+
+    } elseif ($request->get_method()=='POST'){
+        
+        $return = mitwp_event_edit_categories($request->get_body());
+    }
+
+    
+    $response = new WP_REST_Response($return);
+    $response->header( 'Access-Control-Allow-Origin', apply_filters( 'giar_access_control_allow_origin', '*' ) );
+
+    return $response;
+}
+
+
+/**
+ * Serve all REST methods and routes accordingly
+ */
 function mitwp_serve_route(WP_REST_Request $request) {
 
     $return = null;
+    $checkkey = check_seckey($request);
+
+    //If the check returns a WP_REST_Response it's not a valid key.
+    if($checkkey instanceof WP_REST_Response){
+        return $checkkey;
+    }
+
 
     //GET method
     if($request->get_method()=='GET'){
@@ -60,6 +127,44 @@ function mitwp_serve_route(WP_REST_Request $request) {
     $response->header( 'Access-Control-Allow-Origin', apply_filters( 'giar_access_control_allow_origin', '*' ) );
 
     return $response;
+}
+
+function mitwp_event_get_categories() {
+    
+    $success = false;
+    $return = array('success' => $success);
+
+    
+    //$args = array('orderby' => 'name', 'order' => 'ASC', 'fields' => 'all');
+    //$categories = wp_get_object_terms(None, 'event-category', $args);
+    //$categories = get_object_taxonomies( 'event', 'names' ); 
+
+//    $categories = Array('id' => 0,  Array('uid' => 'ABCDE' , 'name' => 'Gudstjeneste') );
+  //  $categories = json_encode($categories);
+    
+    //$balle= update_option('mitwpcategories', $categories ,true);
+
+    $categories = get_option('mitwpcategories');
+    if($categories){
+        $return = $categories;
+    }
+    return $return;
+}
+
+function mitwp_event_edit_categories(string $body) {
+   
+    $checkkey = check_seckey($request);
+
+    error_log( print_r( $body, true ) );
+     // Get values from body_params
+    $categories = $body;
+
+//    $categories = Array('id' => 0,  Array('uid' => 'ABCDE' , 'name' => 'Gudstjeneste') );
+//    $categories = json_encode($categories);
+    $ok = update_option('mitwpcategories', $body ,true);
+    $return = array('success' => $ok);    
+    
+    return $return;
 }
 
 /**
@@ -125,12 +230,13 @@ function mitwp_event_import(array $body_params) {
             'imic_event_day_month' => 'first',
             'imic_event_week_day' => 'sunday',
             'imic_event_frequency_type' => '0',
+            'imic_event_frequency' => '35',
             'imic_sidebar_columns_layout' => '3',
             'imic_event_registration' => '0'
         )
     );
     
-    error_log(json_encode($my_post, JSON_PRETTY_PRINT));
+
     //Prevent mocking with html
     //kses_remove_filters();
 
