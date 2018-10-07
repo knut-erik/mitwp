@@ -1,5 +1,5 @@
 <?php
-define( 'WP_DEBUG', true);
+//define( 'WP_DEBUG', true);
 
 /**
 * Checking WordPress nonce passed in the header.
@@ -230,6 +230,7 @@ function mitwp_event_import(array $body_params) {
             'imic_event_day_month' => 'first',
             'imic_event_week_day' => 'sunday',
             'imic_event_frequency_type' => '0',
+            'imic_event_frequency' => '35',
             'imic_sidebar_columns_layout' => '3',
             'imic_event_registration' => '0'
         )
