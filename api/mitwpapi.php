@@ -3,15 +3,13 @@ define( 'WP_DEBUG', true);
 
 function check_my_nonce(WP_REST_Request $request){
 
-error_log('her1');
-//error_log( print_r($request,true));
-
-$sessioncookie = $request->get_header('_cookie');
-wp_set_auth_cookie($sessioncookie,false);
-
+    //Get the nonce passed by from the client
+    //Verify the nonce through the WP function
+    $nonce = $request->get_header('XP-MITWP-Nonce');
+    $validnonce = wp_verify_nonce($nonce);
     
-error_log( ($check_nonce==false ? 'false' : 'true'));
-    if($check_nonce == false){
+//error_log( ($validnonce==false ? 'false' : 'true'));
+    if($validnonce == false){
 
         $return = Array('msg' => 'Not allowed to do this operation');
         $response = new WP_REST_Response($return);
@@ -21,7 +19,7 @@ error_log( ($check_nonce==false ? 'false' : 'true'));
         return $response;
     }
 
-    return $check_nonce;
+    return $validnonce;
 }
 
 /**
@@ -47,12 +45,8 @@ function mitwp_register_routes() {
 function mitwp_serve_ec_route(WP_REST_Request $request) {
 
     $return = null;
-    
     $check_nonce = check_my_nonce($request);
-    //if(!$check_nonce instanceof WP_REST_Request) {
-    //    return $check_nonce;
-    //};
-
+  
     //GET method
     if($request->get_method()=='GET' && check_my_nonce()){
         

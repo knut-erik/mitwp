@@ -10,8 +10,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var jQuery = __importStar(require("jquery"));
 var ICAL;
 var mitwptrans;
-function getSessionCookie() {
-    return mitwptrans.sessioncookie;
+function getNonce() {
+    return mitwptrans.nonce;
 }
 function sortList(id) {
     var html = $("#" + id);
@@ -67,7 +67,7 @@ function deleteFromWP(rowuid) {
     var restapi = getApiUrl();
     var postid = $("#imp_wpid_" + rowuid).text();
     var category = $("#imp_data_category_" + rowuid + " span").text();
-    restapi += "&postid=" + postid + "&category=" + category;
+    restapi += "?postid=" + postid + "&category=" + category;
     $.ajax({
         url: restapi,
         type: 'DELETE',
@@ -146,13 +146,13 @@ function getICalTable(iCalAsString, category) {
     var vcalendar = new ICAL.Component(jcalData);
     var allSubComponents = vcalendar.getAllSubcomponents('vevent');
     allSubComponents.sort(function (a, b) {
-        var eventa = a.toString();
-        var eventb = b.toString();
-        var toindex = eventa.indexOf(":", eventa.indexOf("DTSTART;"));
-        var firstDateAsNumber = eventa.substring(toindex + 1, toindex + 9);
-        toindex = eventb.indexOf(":", eventb.indexOf("DTSTART;"));
-        var secondDateAsNumber = eventb.substring(toindex + 1, toindex + 9);
-        return (firstDateAsNumber > secondDateAsNumber);
+        var dtstart_a = a.getFirstPropertyValue('dtstart');
+        var dtstart_b = b.getFirstPropertyValue('dtstart');
+        var date_a = new Date(dtstart_a);
+        var date_b = new Date(dtstart_b);
+        var testa = Math.round(date_a.getTime() / 1000);
+        var testb = Math.round(date_b.getTime() / 1000);
+        return (testa - testb);
     });
     var tblHTML = "";
     var uids = [];
@@ -209,7 +209,7 @@ function setExistingCheckbox(uids, category) {
             crossDomain: true,
             xhrFields: { withCredentials: true },
             beforeSend: function (xhr) {
-                xhr.setRequestHeader('_cookie', getSessionCookie());
+                xhr.setRequestHeader('XP-MITWP-Nonce', getNonce());
             },
             success: function (data) {
                 console.log('Status from REST API : ' + status);

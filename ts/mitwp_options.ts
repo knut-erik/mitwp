@@ -10,7 +10,7 @@ import * as jQuery from 'jquery';
  */
 function test() {
         
-    jQuery.get('http://localhost:8080/wp-json/tm/v1/eventcategories', function(categories : string, status : string){
+    jQuery.get('http://localhost:8080/wp-json/mitwp/v1/eventcategories', function(categories : string, status : string){
 
     let cats = JSON.parse(categories);
     console.log(cats);

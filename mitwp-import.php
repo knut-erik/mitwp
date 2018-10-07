@@ -25,11 +25,12 @@ function renderHTML() {
         //Register and enque javascript file
         wp_register_script( 'mitwp_js', plugin_dir_url(__FILE__) . 'ts/mitwp.js');
 
+        $nonce = wp_create_nonce('mitwp-import');
         // Localize javascript
         $mitwp_trans = array(
             'delete' => __( 'DELETE' , 'mitwp' ),
             'a_value' => '10',
-            'sessioncookie' => wp_get_session_token()
+            'nonce' => $nonce
         );
 
         wp_localize_script( 'mitwp_js', 'mitwptrans', $mitwp_trans );
@@ -48,7 +49,7 @@ function renderHTML() {
                         <div class="alert alert-success">
                             <strong><?php _e('REST URL : ','mitwp'); echo get_rest_url(); ?>&nbsp;-&nbsp;
                             <?php _e('USER: ','mitwp'); ?>&nbsp;<?php echo wp_get_current_user()->display_name ?>
-                            &nbsp;-&nbsp;<?php _e('SESSION:','mitwp'); echo ' ' . wp_get_session_token() ?></strong>
+                            &nbsp;-&nbsp;<?php _e('NONCE:','mitwp'); echo ' ' . $nonce ?></strong>
                             <br>
                             <textarea readonly class="form-control" rows="4" id="log"></textarea>
                         </div>

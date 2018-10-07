@@ -8,8 +8,8 @@ let ICAL : any;
 //Transferd as this variable
 let mitwptrans : any;
 
-function getSessionCookie() : string {
-    return mitwptrans.sessioncookie;
+function getNonce() : string {
+    return mitwptrans.nonce;
 }
 
 /**
@@ -134,7 +134,7 @@ function deleteFromWP(rowuid : string){
     let category = $("#imp_data_category_"+rowuid+ " span").text();
 
     //log_info(postid);
-    restapi += "&postid=" + postid + "&category="+category;
+    restapi += "?postid=" + postid + "&category="+category;
     
     $.ajax({
         url: restapi,
@@ -279,29 +279,26 @@ function getICalTable(iCalAsString : string, category : string): [string[], stri
     let allSubComponents = vcalendar.getAllSubcomponents('vevent');
 
     //Sort events
-    //Sorting by using DTSTART time (parsing)
-    //FIXME: Jikes ... this is fragile
     allSubComponents.sort(
         function(a : Object [] ,b : Object []){
+            //Use iCals DTSTART property for comparing
+            //The start date of an event.
+            let dtstart_a = (<any>a).getFirstPropertyValue('dtstart');
+            let dtstart_b = (<any>b).getFirstPropertyValue('dtstart');
 
-            //convert to string
-            let eventa = a.toString();
-            let eventb = b.toString();
-
-            //DTSTART;TZID=W. Europe Standard Time:20181005T180000
-            //LOCATION
-            let toindex = eventa.indexOf(":", eventa.indexOf("DTSTART;"));
-            let firstDateAsNumber = eventa.substring(toindex+1,toindex+9);
-
-            toindex = eventb.indexOf(":", eventb.indexOf("DTSTART;"));
-            let secondDateAsNumber = eventb.substring(toindex+1,toindex+9);
+            let date_a : Date = new Date(dtstart_a);
+            let date_b : Date = new Date(dtstart_b);
             
-            return (firstDateAsNumber>secondDateAsNumber);
+            //Convert time to numbers
+            let testa : number = Math.round(date_a.getTime()/1000);
+            let testb : number = Math.round(date_b.getTime()/1000);
+
+            return (testa - testb);
         }
     );
 
     let tblHTML = "";
-    let uids : any = [];  //TODO: FORDI JEG IKKE HAR ICAL DEFENISJONEN
+    let uids : any = [];  //TODO: Do this in typescript, due to no types/ical definision module.
 
     //Loop through subcomponents
     for (let i=0; i<allSubComponents.length; i++) {
@@ -386,8 +383,7 @@ function setExistingCheckbox(uids : string[], category : string){
                 crossDomain: true,
                 xhrFields:{withCredentials: true},
                 beforeSend: function(xhr){
-                    
-                    xhr.setRequestHeader('_cookie', getSessionCookie());
+                    xhr.setRequestHeader('XP-MITWP-Nonce', getNonce());
                 },
                 success: function(data){
 

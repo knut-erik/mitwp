@@ -9,7 +9,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var jQuery = __importStar(require("jquery"));
 function test() {
-    jQuery.get('http://localhost:8080/wp-json/tm/v1/eventcategories', function (categories, status) {
+    jQuery.get('http://localhost:8080/wp-json/mitwp/v1/eventcategories', function (categories, status) {
         var cats = JSON.parse(categories);
         console.log(cats);
         for (var i = 0; i < categories.length; i++) {
