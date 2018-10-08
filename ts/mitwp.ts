@@ -24,21 +24,6 @@ function getSecKey() : string {
 function getSecRequestHeader() : string {
     return 'mitwp-key';
 }
-/**
- * 
- * @param id - id of <li> elements to sort
- */
-function sortList(id : string) {
-        
-    let html : any = $("#" + id);
-    let htmlLi : any = $("#" + id + " li");
-    
-    let sorted = htmlLi.sort(
-                function (a, b) { return a.innerText == b.innerText ? 0 : a.innerText < b.innerText ? -1 : 1 }
-    );
-        
-    html.html(sorted);    
-}
 
 
 /**
@@ -67,7 +52,7 @@ function parseHTML(html : string) : string {
  * 
  * @param {string} [info] - Text which should be logged to the <div id='log'>
  */
-function log_info(info : string){
+function logInfo(info : string){
 
     let textArea = $("#log");    
     let logText = textArea.val();
@@ -113,18 +98,18 @@ function getiCalFromUrl(urlUID : string, category : string){
     laboraUrl += urlUID;
     laboraUrl += $("#labora_url_params").text();
 
-    log_info('Get iCal from URL : ' + laboraUrl);
+    logInfo('Get iCal from URL : ' + laboraUrl);
 
     //lowercase the category to fit
     category = category.toLowerCase();
-    log_info('Retrieving category : ' + category);
+    logInfo('Retrieving category : ' + category);
 
     disableButton("btn_choose_category",true);
     disableButton("btn_import",true);
 
     //update table with data
     jQuery.get(laboraUrl, function(iCalAsString : string, status : string){
-        log_info('HTTP Response from labora iCal URL => ' + status);
+        logInfo('HTTP Response from labora iCal URL => ' + status);
         updateTable(iCalAsString, category);
         disableButton("btn_choose_category",false);
         disableButton("btn_import",false);
@@ -143,9 +128,7 @@ function deleteFromWP(rowuid : string){
     let postid = $("#imp_wpid_"+rowuid).text();
     let category = $("#imp_data_category_"+rowuid+ " span").text();
 
-    //log_info(postid);
-    restapi += "?postid=" + postid + "&category=" + category;
-    
+    restapi += "?postid=" + postid + "&category=" + category;  
     $.ajax({
         url: restapi,
         type: 'DELETE',
@@ -156,16 +139,16 @@ function deleteFromWP(rowuid : string){
             // Do something with the result
             result = JSON.parse(result);
             if(result.success='true'){
-                log_info('Post_id [' + result.post_id + '] Deleted - [' + result.success+ ']');
+                logInfo('Post_id [' + result.post_id + '] Deleted - [' + result.success+ ']');
                 //Disable Delete button, background on row, wp post_id to empty
                 setExistingCheckbox(Array(rowuid), category);
             }else{
-                log_info('Could not delete? - DELETE returned ' + result.success + ' for Post ' + result.post_id);
+                logInfo('Could not delete? - DELETE returned ' + result.success + ' for Post ' + result.post_id);
             }            
         },
         error: function() {
             // Do something with the result
-            log_info('ERROR - REST API did not receive success - post id => ' + postid);
+            logInfo('ERROR - REST API did not receive success - post id => ' + postid);
         }
 
     });
@@ -218,7 +201,7 @@ function saveImports(){
 
 
         if(importOrNot){
-                log_info('IMPORTING TO WP : ' + postdata.event_summary+' - ' 
+                logInfo('IMPORTING TO WP : ' + postdata.event_summary+' - ' 
                 + new Date(postdata.dtstart).toLocaleString() +' - ' 
                 + new Date(postdata.dtend).toLocaleString());
                     $.ajax({
@@ -260,7 +243,7 @@ function saveImports(){
  */
 function updateTable(iCalAsString : string, category : string){
 
-    log_info('Updating table with Category => ' + category);
+    logInfo('Updating table with Category => ' + category);
     let $place_holder = $("tbody#imp_table_body");
 
     //Clear the table body
@@ -379,7 +362,7 @@ function setExistingCheckbox(uids : string[], category : string){
     disableButton("btn_choose_category",true);
     disableButton("btn_import",true);
 
-    log_info('Check if posts exists in WP - if so mark the rows');
+    logInfo('Check if posts exists in WP - if so mark the rows');
     for(let i=0;i < uids.length;i++){
 
             let gylphicon = 'glyphicon ';

@@ -16,12 +16,6 @@ function getSecKey() {
 function getSecRequestHeader() {
     return 'mitwp-key';
 }
-function sortList(id) {
-    var html = $("#" + id);
-    var htmlLi = $("#" + id + " li");
-    var sorted = htmlLi.sort(function (a, b) { return a.innerText == b.innerText ? 0 : a.innerText < b.innerText ? -1 : 1; });
-    html.html(sorted);
-}
 function parseHTML(html) {
     var parser = new DOMParser;
     var regp = new RegExp('</p>', 'g');
@@ -32,7 +26,7 @@ function parseHTML(html) {
     var decodedString = (dom.body.textContent != null ? dom.body.textContent : '');
     return decodedString;
 }
-function log_info(info) {
+function logInfo(info) {
     var textArea = $("#log");
     var logText = textArea.val();
     var nowstr = '[' + new Date().toLocaleString() + ']';
@@ -54,13 +48,13 @@ function getiCalFromUrl(urlUID, category) {
     var laboraUrl = $("#labora_url").text();
     laboraUrl += urlUID;
     laboraUrl += $("#labora_url_params").text();
-    log_info('Get iCal from URL : ' + laboraUrl);
+    logInfo('Get iCal from URL : ' + laboraUrl);
     category = category.toLowerCase();
-    log_info('Retrieving category : ' + category);
+    logInfo('Retrieving category : ' + category);
     disableButton("btn_choose_category", true);
     disableButton("btn_import", true);
     jQuery.get(laboraUrl, function (iCalAsString, status) {
-        log_info('HTTP Response from labora iCal URL => ' + status);
+        logInfo('HTTP Response from labora iCal URL => ' + status);
         updateTable(iCalAsString, category);
         disableButton("btn_choose_category", false);
         disableButton("btn_import", false);
@@ -80,15 +74,15 @@ function deleteFromWP(rowuid) {
         success: function (result) {
             result = JSON.parse(result);
             if (result.success = 'true') {
-                log_info('Post_id [' + result.post_id + '] Deleted - [' + result.success + ']');
+                logInfo('Post_id [' + result.post_id + '] Deleted - [' + result.success + ']');
                 setExistingCheckbox(Array(rowuid), category);
             }
             else {
-                log_info('Could not delete? - DELETE returned ' + result.success + ' for Post ' + result.post_id);
+                logInfo('Could not delete? - DELETE returned ' + result.success + ' for Post ' + result.post_id);
             }
         },
         error: function () {
-            log_info('ERROR - REST API did not receive success - post id => ' + postid);
+            logInfo('ERROR - REST API did not receive success - post id => ' + postid);
         }
     });
 }
@@ -121,7 +115,7 @@ function saveImports() {
             exists: existsOrNot
         };
         if (importOrNot) {
-            log_info('IMPORTING TO WP : ' + postdata.event_summary + ' - '
+            logInfo('IMPORTING TO WP : ' + postdata.event_summary + ' - '
                 + new Date(postdata.dtstart).toLocaleString() + ' - '
                 + new Date(postdata.dtend).toLocaleString());
             $.ajax({
@@ -147,7 +141,7 @@ function saveImports() {
     }
 }
 function updateTable(iCalAsString, category) {
-    log_info('Updating table with Category => ' + category);
+    logInfo('Updating table with Category => ' + category);
     var $place_holder = $("tbody#imp_table_body");
     $("tbody#imp_table_body").empty();
     var result = getICalTable(iCalAsString, category);
@@ -212,7 +206,7 @@ function setExistingCheckbox(uids, category) {
     var apiurl = getApiUrl();
     disableButton("btn_choose_category", true);
     disableButton("btn_import", true);
-    log_info('Check if posts exists in WP - if so mark the rows');
+    logInfo('Check if posts exists in WP - if so mark the rows');
     var _loop_1 = function (i) {
         var gylphicon = 'glyphicon ';
         var summary = $("#imp_summary_" + uids[i] + " span").text();

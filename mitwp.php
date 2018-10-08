@@ -2,7 +2,7 @@
 /*
 Plugin Name: mitwp
 Description: Plugin which imports iCal events to WP Events
-Version: 1.0
+Version: 0.10
 Author: Knut Erik Hollund
 Text Domain: mitwp
 Domain Path: /lang
