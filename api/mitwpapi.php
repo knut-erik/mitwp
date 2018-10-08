@@ -129,41 +129,38 @@ function mitwp_serve_route(WP_REST_Request $request) {
     return $response;
 }
 
+/**
+ * Get categories saved as option
+ */
 function mitwp_event_get_categories() {
     
     $success = false;
     $return = array('success' => $success);
 
+    $categories = Array('id' => 0,  Array('uid' => 'SOMEUID' , 'name' => 'Some category name') );
+    $categories = json_encode($categories);
     
-    //$args = array('orderby' => 'name', 'order' => 'ASC', 'fields' => 'all');
-    //$categories = wp_get_object_terms(None, 'event-category', $args);
-    //$categories = get_object_taxonomies( 'event', 'names' ); 
-
-//    $categories = Array('id' => 0,  Array('uid' => 'ABCDE' , 'name' => 'Gudstjeneste') );
-  //  $categories = json_encode($categories);
-    
-    //$balle= update_option('mitwpcategories', $categories ,true);
-
-    $categories = get_option('mitwpcategories');
+    //$newoption = update_option('mitwpcategories', $categories ,true);
+    //$categories= get_option('mitwpcategories');
     if($categories){
-        $return = $categories;
+       $return = $categories;
     }
+    $return = json_encode($return);
     return $return;
 }
-
+/**
+ * Save categories (json) to options.
+ * 
+ */
 function mitwp_event_edit_categories(string $body) {
    
-    $checkkey = check_seckey($request);
-
-    error_log( print_r( $body, true ) );
+    //TODO: Finish this..
      // Get values from body_params
     $categories = $body;
 
-//    $categories = Array('id' => 0,  Array('uid' => 'ABCDE' , 'name' => 'Gudstjeneste') );
-//    $categories = json_encode($categories);
     $ok = update_option('mitwpcategories', $body ,true);
     $return = array('success' => $ok);    
-    
+    $return = json_encode($return);
     return $return;
 }
 

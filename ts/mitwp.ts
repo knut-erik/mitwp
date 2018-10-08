@@ -4,14 +4,26 @@ import * as jQuery from 'jquery';
 //TODO: Get ICAL as a module for TypeScript
 let ICAL : any;
 
-//Contains translated strings fired off at the wp side
-//Transferd as this variable
+//Contains translated strings or other useful data.
+//Fireed off by WP wp_localize_script
 let mitwptrans : any;
 
+/**
+ * Get security-key to pass 
+ * as header when doing ajax
+ * @returns {string} - Security key
+ */
 function getSecKey() : string {
     return mitwptrans.seckey;
 }
 
+/**
+ * Return request header used for security key.
+ * @returns {string} - Key to use
+ */
+function getSecRequestHeader() : string {
+    return 'mitwp-key';
+}
 /**
  * 
  * @param id - id of <li> elements to sort
@@ -68,8 +80,6 @@ function log_info(info : string){
 
 /**
  * Return url to REST API
- * 
- * @param {string} [info] - Text which should be logged to the <div id='log'>
  * @returns {string} - The url to the REST API
  */
 function getApiUrl() : string {
@@ -134,25 +144,21 @@ function deleteFromWP(rowuid : string){
     let category = $("#imp_data_category_"+rowuid+ " span").text();
 
     //log_info(postid);
-    restapi += "?postid=" + postid + "&category="+category;
+    restapi += "?postid=" + postid + "&category=" + category;
     
     $.ajax({
         url: restapi,
         type: 'DELETE',
         beforeSend: function(xhr){
-            xhr.setRequestHeader('mitwp-key', getSecKey());
+            xhr.setRequestHeader(getSecRequestHeader(), getSecKey());
         },       
         success: function(result) {
             // Do something with the result
             result = JSON.parse(result);
             if(result.success='true'){
                 log_info('Post_id [' + result.post_id + '] Deleted - [' + result.success+ ']');
-
                 //Disable Delete button, background on row, wp post_id to empty
-                //disableButton("delete_wpid_" + rowuid, true);
-                //$('#row_' + rowuid ).prop('class', '');
                 setExistingCheckbox(Array(rowuid), category);
-
             }else{
                 log_info('Could not delete? - DELETE returned ' + result.success + ' for Post ' + result.post_id);
             }            
@@ -164,10 +170,6 @@ function deleteFromWP(rowuid : string){
 
     });
     
-    //remove id form div tabg
-    //remove success
-    //disable delete button
-
 }
 
 /**
@@ -177,7 +179,7 @@ function saveImports(){
 
     let apiurl = getApiUrl();
 
-    //run through each row - Slice will select form 0 to the end.
+    //Run through each row, slice will select form 0 to the end.
     let rows = $("tbody#imp_table_body tr").slice(0);    
 
     //Loop through and save those which triggers - importornot
@@ -201,7 +203,7 @@ function saveImports(){
         let postID = $("#imp_wpid_"+rowUid).text();
         let wpUserID = $("#wp_user_id").text();
 
-        let post_data = {
+        let postdata = {
             uid: rowUid,
             category: rowCategory,
             dtstart : rowdtStart,
@@ -216,17 +218,17 @@ function saveImports(){
 
 
         if(importOrNot){
-                log_info('IMPORTING TO WP : ' + post_data.event_summary+' - ' 
-                + new Date(post_data.dtstart).toLocaleString() +' - ' 
-                + new Date(post_data.dtend).toLocaleString());
+                log_info('IMPORTING TO WP : ' + postdata.event_summary+' - ' 
+                + new Date(postdata.dtstart).toLocaleString() +' - ' 
+                + new Date(postdata.dtend).toLocaleString());
                     $.ajax({
                             url: apiurl,
-                            data: post_data,
+                            data: postdata,
                             method: 'POST',
                             //crossDomain: true,
                             //xhrFields:{withCredentials: true},
                             beforeSend: function(xhr){
-                                xhr.setRequestHeader('mitwp-key', getSecKey());
+                                xhr.setRequestHeader(getSecRequestHeader(), getSecKey());
                             },
                             success: function(data){
                                 //Disable buttons
@@ -295,7 +297,7 @@ function getICalTable(iCalAsString : string, category : string): [string[], stri
     //Sort events
     allSubComponents.sort(
         function(a : Object [] ,b : Object []){
-            //Use iCals DTSTART property for comparing
+            //Use iCals EVENT DTSTART property for comparing
             //The start date of an event.
             let dtstart_a = (<any>a).getFirstPropertyValue('dtstart');
             let dtstart_b = (<any>b).getFirstPropertyValue('dtstart');
@@ -395,7 +397,7 @@ function setExistingCheckbox(uids : string[], category : string){
                 //crossDomain: true,
                // xhrFields:{withCredentials: true},
                 beforeSend: function(xhr){
-                    xhr.setRequestHeader('mitwp-key', getSecKey());
+                    xhr.setRequestHeader(getSecRequestHeader(), getSecKey());
                 },
                 success: function(data){
 
@@ -422,7 +424,8 @@ function setExistingCheckbox(uids : string[], category : string){
                     $('#exists_' + data.uid ).prop('checked', chkExists);
                     $('#imp_exists_icon_' + data.uid ).prop('class', gylphicon);
                     disableButton("delete_wpid_" + data.uid,!chkExists);
-                    $('#import_' + data.uid ).prop('checked', !chkExists); //Enable import because it doesn't exist
+                    //Enable import because it doesn't exist
+                    $('#import_' + data.uid ).prop('checked', !chkExists); 
                     
                     disableButton("btn_choose_category",false);
                     disableButton("btn_import",false);    
@@ -433,5 +436,4 @@ function setExistingCheckbox(uids : string[], category : string){
                 }
             })
     }
-
 }
