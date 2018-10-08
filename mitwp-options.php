@@ -20,9 +20,17 @@ function optionsHTML() {
     wp_enqueue_script( 'medimp_jquery');
     wp_enqueue_script( 'medimp_bootstrap_js');
 
+    //Use this to verify ajax from plugin
+    $seckey =   CONSTANT('SECURE_AUTH_KEY') . CONSTANT('LOGGED_IN_KEY');
+    $resturl = get_rest_url();
     wp_register_script( 'mitwp_options_js', plugin_dir_url(__FILE__) . 'ts/mitwp_options.js');
+    $mitwp_option_trans = array(
+        'seckey' => $seckey,
+        'apiurl' => $resturl
+    );
+    wp_localize_script( 'mitwp_options_js', 'mitwpoptiontrans', $mitwp_option_trans );
     wp_enqueue_script('mitwp_options_js', plugin_dir_url(__FILE__) . 'ts/mitwp_options.js');
-
+       
 
 ?>
     <!--
@@ -33,12 +41,12 @@ function optionsHTML() {
     -->
     <div class="container-fluid">
         <div class="alert alert-success">
-            <strong><?php _e('REST URL : ','mitwp'); echo get_rest_url(); ?>&nbsp;-&nbsp;<?php _e('USER: ','mitwp'); ?>
+            <strong><?php _e('REST URL : ','mitwp'); echo $resturl; ?>&nbsp;-&nbsp;<?php _e('USER: ','mitwp'); ?>
             &nbsp;<?php echo wp_get_current_user()->display_name ?></strong>
         </div>
         
         <p>Not in use - for the future.</p>
-       <!-- <button onClick="test();">abc</button> -->
+        <!-- <button onClick="getCategories();">TEST</button> -->
 
     </div>
     

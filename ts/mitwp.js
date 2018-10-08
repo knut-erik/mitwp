@@ -13,6 +13,9 @@ var mitwptrans;
 function getSecKey() {
     return mitwptrans.seckey;
 }
+function getSecRequestHeader() {
+    return 'mitwp-key';
+}
 function sortList(id) {
     var html = $("#" + id);
     var htmlLi = $("#" + id + " li");
@@ -72,7 +75,7 @@ function deleteFromWP(rowuid) {
         url: restapi,
         type: 'DELETE',
         beforeSend: function (xhr) {
-            xhr.setRequestHeader('mitwp-key', getSecKey());
+            xhr.setRequestHeader(getSecRequestHeader(), getSecKey());
         },
         success: function (result) {
             result = JSON.parse(result);
@@ -105,7 +108,7 @@ function saveImports() {
         var rowUTCTZOffset = $("#imp_utctzoffset_" + rowUid).text();
         var postID = $("#imp_wpid_" + rowUid).text();
         var wpUserID = $("#wp_user_id").text();
-        var post_data = {
+        var postdata = {
             uid: rowUid,
             category: rowCategory,
             dtstart: rowdtStart,
@@ -118,15 +121,15 @@ function saveImports() {
             exists: existsOrNot
         };
         if (importOrNot) {
-            log_info('IMPORTING TO WP : ' + post_data.event_summary + ' - '
-                + new Date(post_data.dtstart).toLocaleString() + ' - '
-                + new Date(post_data.dtend).toLocaleString());
+            log_info('IMPORTING TO WP : ' + postdata.event_summary + ' - '
+                + new Date(postdata.dtstart).toLocaleString() + ' - '
+                + new Date(postdata.dtend).toLocaleString());
             $.ajax({
                 url: apiurl,
-                data: post_data,
+                data: postdata,
                 method: 'POST',
                 beforeSend: function (xhr) {
-                    xhr.setRequestHeader('mitwp-key', getSecKey());
+                    xhr.setRequestHeader(getSecRequestHeader(), getSecKey());
                 },
                 success: function (data) {
                     disableButton("btn_choose_category", true);
@@ -221,7 +224,7 @@ function setExistingCheckbox(uids, category) {
             method: 'GET',
             contentType: 'application/json',
             beforeSend: function (xhr) {
-                xhr.setRequestHeader('mitwp-key', getSecKey());
+                xhr.setRequestHeader(getSecRequestHeader(), getSecKey());
             },
             success: function (data) {
                 console.log('Status from REST API : ' + status);

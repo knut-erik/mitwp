@@ -24,8 +24,7 @@ function renderHTML() {
         
         //Register and enque javascript file
         wp_register_script( 'mitwp_js', plugin_dir_url(__FILE__) . 'ts/mitwp.js');
-        wp_register_script( 'mitwp_options_js', plugin_dir_url(__FILE__) . 'ts/mitwp_options.js');
-
+       
         //Use this to verify ajax from plugin
         $seckey =   CONSTANT('SECURE_AUTH_KEY') . CONSTANT('LOGGED_IN_KEY');
         // Localize javascript
@@ -34,14 +33,9 @@ function renderHTML() {
             'a_value' => '10',
             'seckey' => $seckey
         );
-        $mitwp_option_trans = array(
-            'seckey' => $seckey
-        );
         wp_localize_script( 'mitwp_js', 'mitwptrans', $mitwp_trans );
-        wp_localize_script( 'mitwp_options_js', 'mitwpoptiontrans', $mitwp_option_trans );
         wp_enqueue_script('mitwp_js', plugin_dir_url(__FILE__) . 'ts/mitwp.js');
-        wp_enqueue_script('mitwp_options_js', plugin_dir_url(__FILE__) . 'ts/mitwp_options.js');
-
+       
         wp_register_script('ical_js', plugin_dir_url(__FILE__) . 'js/ical.min.js');
         wp_enqueue_script('ical_js', plugin_dir_url(__FILE__) . 'js/ical.min.js');
 
