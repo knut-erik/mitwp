@@ -75,7 +75,7 @@ function log_info(info : string){
 function getApiUrl() : string {
     
     let apiurl = $("#home_url").text();
-    apiurl += "/mitwp/v1/events/";    
+    apiurl += "mitwp/v1/events/";    
     return apiurl;
 }
 

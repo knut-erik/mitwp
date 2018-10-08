@@ -41,7 +41,7 @@ function log_info(info) {
 }
 function getApiUrl() {
     var apiurl = $("#home_url").text();
-    apiurl += "/mitwp/v1/events/";
+    apiurl += "mitwp/v1/events/";
     return apiurl;
 }
 function disableButton(buttonID, disable) {
