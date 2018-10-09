@@ -1,19 +1,41 @@
 //Import jquery TS
 import * as jQuery from 'jquery';
 
+
+export default class ICalTable {
+
+    private uids: string[];
+    private tableashtml: string;
+
+    public constructor(private varuids: string[], tableashtml: string) {
+        this.uids = varuids;
+        this.tableashtml = tableashtml;
+    }
+    
+    public getUIDS(){
+        return this.uids;
+    }
+
+    public getTableAsHtml(){
+        return this.tableashtml;
+    }
+
+  }
+
+
 //TODO: Get ICAL as a module for TypeScript
-let ICAL : any;
+let ICAL: any;
 
 //Contains translated strings or other useful data.
 //Fireed off by WP wp_localize_script
-let mitwptrans : any;
+let mitwptrans: any;
 
 /**
  * Get security-key to pass 
  * as header when doing ajax
  * @returns {string} - Security key
  */
-function getSecKey() : string {
+function getSecKey(): string {
     return mitwptrans.seckey;
 }
 
@@ -21,10 +43,26 @@ function getSecKey() : string {
  * Return request header used for security key.
  * @returns {string} - Key to use
  */
-function getSecRequestHeader() : string {
+function getSecRequestHeader(): string {
     return 'mitwp-key';
 }
 
+
+/**
+ * Used for sorting a list within the bootstrap combobox
+ * @param id - id of <li> elements to sort
+ */
+function sortList(id: string) {
+        
+    let html: any = $("#" + id);
+    let htmlLi: any = $("#" + id + " li");
+    
+    let sorted = htmlLi.sort(
+                function (a, b) { return a.innerText == b.innerText ? 0 : a.innerText < b.innerText ? -1 : 1 }
+    );
+        
+    html.html(sorted);    
+}
 
 /**
  * Disable a button with the corresponding buttonID.
@@ -32,17 +70,17 @@ function getSecRequestHeader() : string {
  * @param {string} [html] - HTML code which should be decoded to plain text.
  * @param {string} - Clean text without HTML or any markup code.
  */
-function parseHTML(html : string) : string {
+function parseHTML(html: string): string {
     var parser = new DOMParser;
 
     //replace </p> and <br> with linebreaks
-    var regp = new RegExp('</p>', 'g');
-    var regbr = new RegExp('<br>', 'g');    
+    var regp: RegExp = new RegExp('</p>', 'g');
+    var regbr: RegExp = new RegExp('<br>', 'g');    
     html = html.replace(regp ,"</p>\n");
     html = html.replace(regbr ,"<br>\n");
 
     var dom = parser.parseFromString(html, 'text/html');
-    var decodedString : string = (dom.body.textContent!=null ? dom.body.textContent : '');
+    var decodedString: string = (dom.body.textContent!=null ? dom.body.textContent : '');
     
     return decodedString;    
 }
@@ -52,11 +90,11 @@ function parseHTML(html : string) : string {
  * 
  * @param {string} [info] - Text which should be logged to the <div id='log'>
  */
-function logInfo(info : string){
+function logInfo(info: string){
 
     let textArea = $("#log");    
-    let logText = textArea.val();
-    let nowstr = '[' + new Date().toLocaleString() + ']';
+    let logText: string = textArea.toString();
+    let nowstr: string = '[' + new Date().toLocaleString() + ']';
 
     logText += '\r\n' + nowstr + '[ ' + info + ' ]';
     if (logText) {textArea.val(logText);}
@@ -67,9 +105,9 @@ function logInfo(info : string){
  * Return url to REST API
  * @returns {string} - The url to the REST API
  */
-function getApiUrl() : string {
+function getApiUrl(): string {
     
-    let apiurl = $("#home_url").text();
+    let apiurl : string = $("#home_url").text();
     apiurl += "mitwp/v1/events/";    
     return apiurl;
 }
@@ -80,7 +118,7 @@ function getApiUrl() : string {
  * @param {string} [buttonID] - ID of button to disable
  * @param {boolean} [disable] - Disable the button?
  */
-function disableButton(buttonID : string, disable : boolean) {
+function disableButton(buttonID: string, disable: boolean) {
 
     $("#" + buttonID).prop('disabled', disable);
 }
@@ -91,10 +129,10 @@ function disableButton(buttonID : string, disable : boolean) {
  * @param {string} [urlUID] - UID from Labora.
  * @param {string} [category] - Category in Labora which is retrieved.
  */
-function getiCalFromUrl(urlUID : string, category : string){
+function getiCalFromUrl(urlUID: string, category: string){
 
     //Get URL to Labora's UID getter and add parameters
-    let laboraUrl = $("#labora_url").text();
+    let laboraUrl: string = $("#labora_url").text();
     laboraUrl += urlUID;
     laboraUrl += $("#labora_url_params").text();
 
@@ -122,11 +160,11 @@ function getiCalFromUrl(urlUID : string, category : string){
  * 
  * @param {string} [rowuid] - Unique EVENT UID from the iCal file.
  */
-function deleteFromWP(rowuid : string){
+function deleteFromWP(rowuid: string){
     
-    let restapi = getApiUrl();
-    let postid = $("#imp_wpid_"+rowuid).text();
-    let category = $("#imp_data_category_"+rowuid+ " span").text();
+    let restapi: string = getApiUrl();
+    let postid: string = $("#imp_wpid_"+rowuid).text();
+    let category: string = $("#imp_data_category_"+rowuid+ " span").text();
 
     restapi += "?postid=" + postid + "&category=" + category;  
     $.ajax({
@@ -160,7 +198,7 @@ function deleteFromWP(rowuid : string){
  */
 function saveImports(){
 
-    let apiurl = getApiUrl();
+    let apiurl: string= getApiUrl();
 
     //Run through each row, slice will select form 0 to the end.
     let rows = $("tbody#imp_table_body tr").slice(0);    
@@ -173,18 +211,18 @@ function saveImports(){
 
         let importOrNot = $("#import_"+rowUid).is(':checked');
         let existsOrNot = $("#exists_"+rowUid).is(':checked');
-        let rowSummary = $("#imp_summary_"+rowUid+ " span").text();
-        let rowCategory = $("#imp_data_category_"+rowUid+ " span").text();
-        let rowDescription = $("#imp_description_"+rowUid+ " span").html();
+        let rowSummary : string= $("#imp_summary_"+rowUid+ " span").text();
+        let rowCategory : string = $("#imp_data_category_"+rowUid+ " span").text();
+        let rowDescription : string = $("#imp_description_"+rowUid+ " span").html();
 
         //Remove HTML code
         rowDescription = parseHTML(rowDescription);
 
-        let rowdtStart = $("#imp_dtstart_utc_"+rowUid).text();
-        let rowdtEnd = $("#imp_dtend_utc_"+rowUid).text();
-        let rowUTCTZOffset = $("#imp_utctzoffset_"+rowUid).text();
-        let postID = $("#imp_wpid_"+rowUid).text();
-        let wpUserID = $("#wp_user_id").text();
+        let rowdtStart : string = $("#imp_dtstart_utc_"+rowUid).text();
+        let rowdtEnd : string = $("#imp_dtend_utc_"+rowUid).text();
+        let rowUTCTZOffset : string = $("#imp_utctzoffset_"+rowUid).text();
+        let postID : string = $("#imp_wpid_"+rowUid).text();
+        let wpUserID : string = $("#wp_user_id").text();
 
         let postdata = {
             uid: rowUid,
@@ -241,7 +279,7 @@ function saveImports(){
  * @param {string} [iCalAsString] - iCal file retreived from labora.
  * @param {string} [category] - Category of retrieved iCal.
  */
-function updateTable(iCalAsString : string, category : string){
+function updateTable(iCalAsString: string, category: string){
 
     logInfo('Updating table with Category => ' + category);
     let $place_holder = $("tbody#imp_table_body");
@@ -249,14 +287,16 @@ function updateTable(iCalAsString : string, category : string){
     //Clear the table body
     $("tbody#imp_table_body").empty();
 
-    let result = getICalTable(iCalAsString, category);
-    let uids = result[0];
-    let tableDOM = $.parseHTML(result[1]);
+    let icaltable: ICalTable = getICalTable(iCalAsString, category);
+    //let uids = result[0];
+    //let tableDOM = $.parseHTML(result[1]);
+    let tableDOM = $.parseHTML(icaltable.getTableAsHtml());
 
     //Append the new DOM - table content
     $place_holder.append(tableDOM);
 
-    setExistingCheckbox(uids, category);
+    //setExistingCheckbox(uids, category);
+    setExistingCheckbox(icaltable.getUIDS(), category);
 }
 
 
@@ -265,9 +305,9 @@ function updateTable(iCalAsString : string, category : string){
  * 
  * @param {string} [iCalAsString] - iCal file retreived from labora.
  * @param {string} [category] - Category of retrieved iCal.
- * @returns {string[string[],string]} - Returns an array consist of arrays of UIDs and the HTML code.
+ * @returns {ICalTable} - Returns an instance of ICalTable containing UIDS and htmltable.
  */
-function getICalTable(iCalAsString : string, category : string): [string[], string] {
+function getICalTable(iCalAsString: string, category: string): ICalTable {
 
     disableButton("btn_choose_category",true);
     disableButton("btn_import",true);
@@ -279,25 +319,25 @@ function getICalTable(iCalAsString : string, category : string): [string[], stri
 
     //Sort events
     allSubComponents.sort(
-        function(a : Object [] ,b : Object []){
+        function(a: Object [] ,b: Object []){
             //Use iCals EVENT DTSTART property for comparing
             //The start date of an event.
             let dtstart_a = (<any>a).getFirstPropertyValue('dtstart');
             let dtstart_b = (<any>b).getFirstPropertyValue('dtstart');
 
-            let date_a : Date = new Date(dtstart_a);
-            let date_b : Date = new Date(dtstart_b);
+            let date_a: Date = new Date(dtstart_a);
+            let date_b: Date = new Date(dtstart_b);
             
             //Convert time to numbers
-            let testa : number = Math.round(date_a.getTime()/1000);
-            let testb : number = Math.round(date_b.getTime()/1000);
+            let testa: number = Math.round(date_a.getTime()/1000);
+            let testb: number = Math.round(date_b.getTime()/1000);
 
             return (testa - testb);
         }
     );
 
-    let tblHTML = "";
-    let uids : any = [];  //TODO: Do this in typescript, due to no types/ical definision module.
+    let tblHTML: string = "";
+    let uids: string[] = [];  //TODO: Do this in typescript, due to no types/ical definision module.
 
     //Loop through subcomponents
     for (let i=0; i<allSubComponents.length; i++) {
@@ -346,7 +386,9 @@ function getICalTable(iCalAsString : string, category : string): [string[], stri
     disableButton("btn_choose_category",false);
     disableButton("btn_import",false);
 
-    return [uids,tblHTML];
+    let icalTable: ICalTable = new ICalTable(uids,tblHTML);
+    return  icalTable;
+   // return [uids,tblHTML];
 }
 
 /**
@@ -355,7 +397,7 @@ function getICalTable(iCalAsString : string, category : string): [string[], stri
  * @param {string[]} [uids] - Array of strings which holds the UIDs from the iCal.
  * @param {string} [category] - Category of retrieved iCal.
  */
-function setExistingCheckbox(uids : string[], category : string){
+function setExistingCheckbox(uids: string[], category: string){
 
     let apiurl = getApiUrl();    
 
