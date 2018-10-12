@@ -8,6 +8,21 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jQuery = __importStar(require("jquery"));
+var ICalTable = (function () {
+    function ICalTable(varuids, tableashtml) {
+        this.varuids = varuids;
+        this.uids = varuids;
+        this.tableashtml = tableashtml;
+    }
+    ICalTable.prototype.getUIDS = function () {
+        return this.uids;
+    };
+    ICalTable.prototype.getTableAsHtml = function () {
+        return this.tableashtml;
+    };
+    return ICalTable;
+}());
+exports.default = ICalTable;
 var ICAL;
 var mitwptrans;
 function getSecKey() {
@@ -15,6 +30,12 @@ function getSecKey() {
 }
 function getSecRequestHeader() {
     return 'mitwp-key';
+}
+function sortList(id) {
+    var html = $("#" + id);
+    var htmlLi = $("#" + id + " li");
+    var sorted = htmlLi.sort(function (a, b) { return a.innerText == b.innerText ? 0 : a.innerText < b.innerText ? -1 : 1; });
+    html.html(sorted);
 }
 function parseHTML(html) {
     var parser = new DOMParser;
@@ -28,7 +49,7 @@ function parseHTML(html) {
 }
 function logInfo(info) {
     var textArea = $("#log");
-    var logText = textArea.val();
+    var logText = textArea.toString();
     var nowstr = '[' + new Date().toLocaleString() + ']';
     logText += '\r\n' + nowstr + '[ ' + info + ' ]';
     if (logText) {
@@ -144,11 +165,10 @@ function updateTable(iCalAsString, category) {
     logInfo('Updating table with Category => ' + category);
     var $place_holder = $("tbody#imp_table_body");
     $("tbody#imp_table_body").empty();
-    var result = getICalTable(iCalAsString, category);
-    var uids = result[0];
-    var tableDOM = $.parseHTML(result[1]);
+    var icaltable = getICalTable(iCalAsString, category);
+    var tableDOM = $.parseHTML(icaltable.getTableAsHtml());
     $place_holder.append(tableDOM);
-    setExistingCheckbox(uids, category);
+    setExistingCheckbox(icaltable.getUIDS(), category);
 }
 function getICalTable(iCalAsString, category) {
     disableButton("btn_choose_category", true);
@@ -200,7 +220,8 @@ function getICalTable(iCalAsString, category) {
     }
     disableButton("btn_choose_category", false);
     disableButton("btn_import", false);
-    return [uids, tblHTML];
+    var icalTable = new ICalTable(uids, tblHTML);
+    return icalTable;
 }
 function setExistingCheckbox(uids, category) {
     var apiurl = getApiUrl();

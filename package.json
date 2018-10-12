@@ -1,0 +1,10 @@
+{
+  "name": "mitwp",
+  "description": "iCal integration into WP events",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "jquery": "3.3.x",
+    "typescript": "3.x"
+  }
+}
