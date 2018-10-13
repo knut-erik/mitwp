@@ -6,14 +6,17 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var jQuery = __importStar(require("jquery"));
+var ICAL;
+var mitwptrans;
 var ICalTable = (function () {
-    function ICalTable(varuids, tableashtml) {
-        this.varuids = varuids;
-        this.uids = varuids;
-        this.tableashtml = tableashtml;
+    function ICalTable() {
     }
+    ICalTable.prototype.setting = function (varuids, html) {
+        this.uids = varuids;
+        this.tableashtml = html;
+    };
     ICalTable.prototype.getUIDS = function () {
         return this.uids;
     };
@@ -22,9 +25,7 @@ var ICalTable = (function () {
     };
     return ICalTable;
 }());
-exports.default = ICalTable;
-var ICAL;
-var mitwptrans;
+exports.ICalTable = ICalTable;
 function getSecKey() {
     return mitwptrans.seckey;
 }
@@ -204,7 +205,7 @@ function getICalTable(iCalAsString, category) {
         var tblColumn = "<td id='imp_import' class='text-center'><input id='import_" + uid + "' type='checkbox' /></td>";
         tblColumn += "<td id='imp_exists' class='text-center'><span id='imp_exists_icon_" + uid + "' class=''></span>&nbsp;";
         tblColumn += "<input style='opacity: 0;' id='exists_" + uid + "' type='radio' disabled readOnly />";
-        tblColumn += "&nbsp;&nbsp;<button id='delete_wpid_" + uid + "' onclick='deleteFromWP(\"" + uid + "\")' class='btn btn-danger' disabled>" + mitwptrans.delete + "</td>";
+        tblColumn += "&nbsp;&nbsp;<button id='delete_wpid_" + uid + "' onclick='deleteFromWP(\"" + uid + "\")' class='btn btn-danger' disabled>" + mitwptrans["delete"] + "</td>";
         tblColumn += "<td id='imp_summary_" + uid + "'><span>" + summary + "</span></td>";
         tblColumn += "<td id='imp_dtstart_" + uid + "' class='text-center'><span>" + new Date(dtstart).toLocaleString() + "</span></td>";
         tblColumn += "<td id='imp_dtend' class='text-center'><span id='span_dtend'>" + new Date(dtend).toLocaleString() + "</span></td>";
@@ -220,8 +221,9 @@ function getICalTable(iCalAsString, category) {
     }
     disableButton("btn_choose_category", false);
     disableButton("btn_import", false);
-    var icalTable = new ICalTable(uids, tblHTML);
-    return icalTable;
+    var tbl = new ICalTable();
+    tbl.setting(uids, tblHTML);
+    return tbl;
 }
 function setExistingCheckbox(uids, category) {
     var apiurl = getApiUrl();

@@ -2,14 +2,21 @@
 import * as jQuery from 'jquery';
 
 
-export default class ICalTable {
+//TODO: Get ICAL as a module for TypeScript
+let ICAL: any;
+
+//Contains translated strings or other useful data.
+//Fire off by WP wp_localize_script
+let mitwptrans: any;
+
+ export class ICalTable {
 
     private uids: string[];
     private tableashtml: string;
 
-    public constructor(private varuids: string[], tableashtml: string) {
+    public setting(varuids: string[], html: string) {
         this.uids = varuids;
-        this.tableashtml = tableashtml;
+        this.tableashtml = html;
     }
     
     public getUIDS(){
@@ -21,14 +28,6 @@ export default class ICalTable {
     }
 
   }
-
-
-//TODO: Get ICAL as a module for TypeScript
-let ICAL: any;
-
-//Contains translated strings or other useful data.
-//Fireed off by WP wp_localize_script
-let mitwptrans: any;
 
 /**
  * Get security-key to pass 
@@ -386,8 +385,10 @@ function getICalTable(iCalAsString: string, category: string): ICalTable {
     disableButton("btn_choose_category",false);
     disableButton("btn_import",false);
 
-    let icalTable: ICalTable = new ICalTable(uids,tblHTML);
-    return  icalTable;
+    let tbl = new ICalTable();
+    tbl.setting(uids, tblHTML);
+    //let tbl = new ICalTable(uids, tblHTML);
+    return  tbl;
    // return [uids,tblHTML];
 }
 
