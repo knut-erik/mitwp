@@ -10,22 +10,6 @@ exports.__esModule = true;
 var jQuery = __importStar(require("jquery"));
 var ICAL;
 var mitwptrans;
-var ICalTable = (function () {
-    function ICalTable() {
-    }
-    ICalTable.prototype.setting = function (varuids, html) {
-        this.uids = varuids;
-        this.tableashtml = html;
-    };
-    ICalTable.prototype.getUIDS = function () {
-        return this.uids;
-    };
-    ICalTable.prototype.getTableAsHtml = function () {
-        return this.tableashtml;
-    };
-    return ICalTable;
-}());
-exports.ICalTable = ICalTable;
 function getSecKey() {
     return mitwptrans.seckey;
 }
@@ -166,10 +150,11 @@ function updateTable(iCalAsString, category) {
     logInfo('Updating table with Category => ' + category);
     var $place_holder = $("tbody#imp_table_body");
     $("tbody#imp_table_body").empty();
-    var icaltable = getICalTable(iCalAsString, category);
-    var tableDOM = $.parseHTML(icaltable.getTableAsHtml());
+    var result = getICalTable(iCalAsString, category);
+    var uids = result[0];
+    var tableDOM = $.parseHTML(result[1]);
     $place_holder.append(tableDOM);
-    setExistingCheckbox(icaltable.getUIDS(), category);
+    setExistingCheckbox(uids, category);
 }
 function getICalTable(iCalAsString, category) {
     disableButton("btn_choose_category", true);
@@ -221,9 +206,7 @@ function getICalTable(iCalAsString, category) {
     }
     disableButton("btn_choose_category", false);
     disableButton("btn_import", false);
-    var tbl = new ICalTable();
-    tbl.setting(uids, tblHTML);
-    return tbl;
+    return [uids, tblHTML];
 }
 function setExistingCheckbox(uids, category) {
     var apiurl = getApiUrl();

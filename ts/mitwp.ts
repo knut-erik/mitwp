@@ -9,25 +9,6 @@ let ICAL: any;
 //Fire off by WP wp_localize_script
 let mitwptrans: any;
 
- export class ICalTable {
-
-    private uids: string[];
-    private tableashtml: string;
-
-    public setting(varuids: string[], html: string) {
-        this.uids = varuids;
-        this.tableashtml = html;
-    }
-    
-    public getUIDS(){
-        return this.uids;
-    }
-
-    public getTableAsHtml(){
-        return this.tableashtml;
-    }
-
-  }
 
 /**
  * Get security-key to pass 
@@ -286,16 +267,15 @@ function updateTable(iCalAsString: string, category: string){
     //Clear the table body
     $("tbody#imp_table_body").empty();
 
-    let icaltable: ICalTable = getICalTable(iCalAsString, category);
-    //let uids = result[0];
-    //let tableDOM = $.parseHTML(result[1]);
-    let tableDOM = $.parseHTML(icaltable.getTableAsHtml());
+    //let icaltable: ICalTable = getICalTable(iCalAsString, category);
+    let result = getICalTable(iCalAsString, category);
+    let uids = result[0];
+    let tableDOM = $.parseHTML(result[1]);
 
     //Append the new DOM - table content
     $place_holder.append(tableDOM);
 
-    //setExistingCheckbox(uids, category);
-    setExistingCheckbox(icaltable.getUIDS(), category);
+    setExistingCheckbox(uids, category);
 }
 
 
@@ -304,9 +284,9 @@ function updateTable(iCalAsString: string, category: string){
  * 
  * @param {string} [iCalAsString] - iCal file retreived from labora.
  * @param {string} [category] - Category of retrieved iCal.
- * @returns {ICalTable} - Returns an instance of ICalTable containing UIDS and htmltable.
+ * @returns {string[string[],string]} - Returns an array consist of arrays of UIDs and the HTML code.
  */
-function getICalTable(iCalAsString: string, category: string): ICalTable {
+function getICalTable(iCalAsString: string, category: string): [string[], string] {
 
     disableButton("btn_choose_category",true);
     disableButton("btn_import",true);
@@ -385,11 +365,7 @@ function getICalTable(iCalAsString: string, category: string): ICalTable {
     disableButton("btn_choose_category",false);
     disableButton("btn_import",false);
 
-    let tbl = new ICalTable();
-    tbl.setting(uids, tblHTML);
-    //let tbl = new ICalTable(uids, tblHTML);
-    return  tbl;
-   // return [uids,tblHTML];
+    return [uids,tblHTML];
 }
 
 /**
