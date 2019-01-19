@@ -6,23 +6,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
     result["default"] = mod;
     return result;
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var jQuery = __importStar(require("jquery"));
-var ICalTable = (function () {
-    function ICalTable(varuids, tableashtml) {
-        this.varuids = varuids;
-        this.uids = varuids;
-        this.tableashtml = tableashtml;
-    }
-    ICalTable.prototype.getUIDS = function () {
-        return this.uids;
-    };
-    ICalTable.prototype.getTableAsHtml = function () {
-        return this.tableashtml;
-    };
-    return ICalTable;
-}());
-exports.default = ICalTable;
 var ICAL;
 var mitwptrans;
 function getSecKey() {
@@ -165,10 +150,11 @@ function updateTable(iCalAsString, category) {
     logInfo('Updating table with Category => ' + category);
     var $place_holder = $("tbody#imp_table_body");
     $("tbody#imp_table_body").empty();
-    var icaltable = getICalTable(iCalAsString, category);
-    var tableDOM = $.parseHTML(icaltable.getTableAsHtml());
+    var result = getICalTable(iCalAsString, category);
+    var uids = result[0];
+    var tableDOM = $.parseHTML(result[1]);
     $place_holder.append(tableDOM);
-    setExistingCheckbox(icaltable.getUIDS(), category);
+    setExistingCheckbox(uids, category);
 }
 function getICalTable(iCalAsString, category) {
     disableButton("btn_choose_category", true);
@@ -204,7 +190,7 @@ function getICalTable(iCalAsString, category) {
         var tblColumn = "<td id='imp_import' class='text-center'><input id='import_" + uid + "' type='checkbox' /></td>";
         tblColumn += "<td id='imp_exists' class='text-center'><span id='imp_exists_icon_" + uid + "' class=''></span>&nbsp;";
         tblColumn += "<input style='opacity: 0;' id='exists_" + uid + "' type='radio' disabled readOnly />";
-        tblColumn += "&nbsp;&nbsp;<button id='delete_wpid_" + uid + "' onclick='deleteFromWP(\"" + uid + "\")' class='btn btn-danger' disabled>" + mitwptrans.delete + "</td>";
+        tblColumn += "&nbsp;&nbsp;<button id='delete_wpid_" + uid + "' onclick='deleteFromWP(\"" + uid + "\")' class='btn btn-danger' disabled>" + mitwptrans["delete"] + "</td>";
         tblColumn += "<td id='imp_summary_" + uid + "'><span>" + summary + "</span></td>";
         tblColumn += "<td id='imp_dtstart_" + uid + "' class='text-center'><span>" + new Date(dtstart).toLocaleString() + "</span></td>";
         tblColumn += "<td id='imp_dtend' class='text-center'><span id='span_dtend'>" + new Date(dtend).toLocaleString() + "</span></td>";
@@ -220,8 +206,7 @@ function getICalTable(iCalAsString, category) {
     }
     disableButton("btn_choose_category", false);
     disableButton("btn_import", false);
-    var icalTable = new ICalTable(uids, tblHTML);
-    return icalTable;
+    return [uids, tblHTML];
 }
 function setExistingCheckbox(uids, category) {
     var apiurl = getApiUrl();
