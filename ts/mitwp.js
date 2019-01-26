@@ -10,6 +10,13 @@ exports.__esModule = true;
 var jQuery = __importStar(require("jquery"));
 var ICAL;
 var mitwptrans;
+function logInfo(info) {
+    var nowstr = '[' + new Date().toLocaleString() + ']';
+    var logText = '\r\n' + (nowstr ? nowstr : '') + '[ ' + (info ? info : '') + ' ]';
+    if (logText) {
+        console.log(logText);
+    }
+}
 function getSecKey() {
     return mitwptrans.seckey;
 }
@@ -31,13 +38,6 @@ function parseHTML(html) {
     var dom = parser.parseFromString(html, 'text/html');
     var decodedString = (dom.body.textContent != null ? dom.body.textContent : '');
     return decodedString;
-}
-function logInfo(info) {
-    var nowstr = '[' + new Date().toLocaleString() + ']';
-    var logText = '\r\n' + (nowstr ? nowstr : '') + '[ ' + (info ? info : '') + ' ]';
-    if (logText) {
-        console.log(logText);
-    }
 }
 function getApiUrl() {
     var apiurl = $("#home_url").text();
@@ -137,7 +137,7 @@ function saveImports() {
                     disableButton("btn_import", false);
                 },
                 error: function (jqXHR, status, errorthrown) {
-                    console.log(status + ' - ' + errorthrown + ' - ' + jqXHR.responseText);
+                    logInfo(status + ' - ' + errorthrown + ' - ' + jqXHR.responseText);
                 }
             });
         }
@@ -224,7 +224,7 @@ function setExistingCheckbox(uids, category) {
                 xhr.setRequestHeader(getSecRequestHeader(), getSecKey());
             },
             success: function (data) {
-                console.log('Status from REST API : ' + status);
+                logInfo('Status from REST API : ' + status);
                 data = JSON.parse(data);
                 disableButton("btn_choose_category", true);
                 disableButton("btn_import", true);
@@ -248,7 +248,7 @@ function setExistingCheckbox(uids, category) {
                 disableButton("btn_import", false);
             },
             error: function (jqXHR, status, errorthrown) {
-                console.log(status + ' - ' + errorthrown + ' - ' + jqXHR.responseText);
+                logInfo(status + ' - ' + errorthrown + ' - ' + jqXHR.responseText);
             }
         });
     };

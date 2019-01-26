@@ -1,7 +1,6 @@
 //Import jquery TS
 import * as jQuery from 'jquery';
 
-
 //TODO: Get ICAL as a module for TypeScript
 let ICAL: any;
 
@@ -9,6 +8,20 @@ let ICAL: any;
 //Fire off by WP wp_localize_script
 let mitwptrans: any;
 
+
+/**
+ * Logging info to the console log.
+ * 
+ * @param {string} [info] - Text which should be logged to console.log
+ */
+function logInfo(info: string){
+
+    let nowstr: string = '[' + new Date().toLocaleString() + ']';
+    let logText: string = '\r\n' + (nowstr ? nowstr : '') + '[ ' + (info ? info : '') + ' ]';
+    if (logText) {
+        console.log(logText);
+    }
+}
 
 /**
  * Get security-key to pass 
@@ -63,19 +76,6 @@ function parseHTML(html: string): string {
     var decodedString: string = (dom.body.textContent!=null ? dom.body.textContent : '');
     
     return decodedString;    
-}
-
-/**
- * Disable a button with the corresponding buttonID.
- * 
- * @param {string} [info] - Text which should be logged to the <div id='log'>
- */
-function logInfo(info: string){
-    let nowstr: string = '[' + new Date().toLocaleString() + ']';
-    let logText: string = '\r\n' + (nowstr ? nowstr : '') + '[ ' + (info ? info : '') + ' ]';
-    if (logText) {
-        console.log(logText);
-    }
 }
 
 /**
@@ -216,7 +216,7 @@ function saveImports(){
 
 
         if(importOrNot){
-                logInfo('IMPORTING TO WP : ' + postdata.event_summary+' - ' 
+            logInfo('IMPORTING TO WP : ' + postdata.event_summary+' - ' 
                 + new Date(postdata.dtstart).toLocaleString() +' - ' 
                 + new Date(postdata.dtend).toLocaleString());
                     $.ajax({
@@ -242,7 +242,7 @@ function saveImports(){
                                 disableButton("btn_import",false);
                         },
                         error: function(jqXHR, status, errorthrown ){ 
-                            console.log(status + ' - ' + errorthrown + ' - ' + jqXHR.responseText); 
+                            logInfo(status + ' - ' + errorthrown + ' - ' + jqXHR.responseText); 
                         }
                     });
         }
@@ -400,7 +400,7 @@ function setExistingCheckbox(uids: string[], category: string){
                 },
                 success: function(data){
 
-                    console.log('Status from REST API : ' + status);
+                    logInfo('Status from REST API : ' + status);
                     //Parse JSON string into object
                     data = JSON.parse(data);
     
@@ -431,7 +431,7 @@ function setExistingCheckbox(uids: string[], category: string){
 
                 },
                 error: function(jqXHR, status, errorthrown ){ 
-                    console.log(status + ' - ' + errorthrown + ' - ' + jqXHR.responseText); 
+                    logInfo(status + ' - ' + errorthrown + ' - ' + jqXHR.responseText); 
                 }
             })
     }
