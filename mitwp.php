@@ -61,6 +61,11 @@ define('TORSDAGSLUNSJ_BTN_TXT', __('Torsdagslunsj','mitwp'));
 define('SONDAGSSKOLE_ICAL_UID', 'ff23f4d5-c98e-403e-bfe1-a96f013432de');
 define('SONDAGSSKOLE_BTN_TXT', __('Søndagsskole','mitwp'));
 
+define('FOLLOWME_ICAL_UID', 'ff23f4d5-c98e-403e-bfe1-a96f013432de');
+define('FOLLOWME_BTN_TXT', __('Follow Me','mitwp'));
+
+define('BIBELKVELD_ICAL_UID', 'ff23f4d5-c98e-403e-bfe1-a96f013432de');
+define('BIBELKVELD_BTN_TXT', __('Bibelkveld','mitwp'));
 
 //Require once to load the php code, else it would not be found
 require_once( dirname(__FILE__) . '/mitwp-import.php' );

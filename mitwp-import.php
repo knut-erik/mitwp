@@ -108,6 +108,12 @@ function renderHTML() {
                             <li><a href="javascript:getiCalFromUrl('<?php echo constant('TORSDAGSLUNSJ_ICAL_UID'); ?>'
                             , '<?php echo constant('TORSDAGSLUNSJ_BTN_TXT'); ?>')"><?php echo constant('TORSDAGSLUNSJ_BTN_TXT'); ?></a></li>
 
+                            <li><a href="javascript:getiCalFromUrl('<?php echo constant('FOLLOWME_ICAL_UID'); ?>'
+                            , '<?php echo constant('FOLLOWME_BTN_TXT'); ?>')"><?php echo constant('FOLLOWME_BTN_TXT'); ?></a></li>
+
+                            <li><a href="javascript:getiCalFromUrl('<?php echo constant('BIBELKVELD_ICAL_UID'); ?>'
+                            , '<?php echo constant('BIBELKVELD_BTN_TXT'); ?>')"><?php echo constant('BIBELKVELD_BTN_TXT'); ?></a></li>
+
                             <li><a href="javascript:getiCalFromUrl('<?php echo constant('ARRANGEMENT_ICAL_UID'); ?>'
                             , '<?php echo constant('ARRANGEMENT_BTN_TXT'); ?>')"><?php echo constant('ARRANGEMENT_BTN_TXT'); ?></a></li>
                         </ul><!-- dropdown-menu -->
