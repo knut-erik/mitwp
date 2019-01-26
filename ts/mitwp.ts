@@ -71,14 +71,11 @@ function parseHTML(html: string): string {
  * @param {string} [info] - Text which should be logged to the <div id='log'>
  */
 function logInfo(info: string){
-
-    let textArea = $("#log");    
-    let logText: string = textArea.toString();
     let nowstr: string = '[' + new Date().toLocaleString() + ']';
-
-    logText += '\r\n' + nowstr + '[ ' + info + ' ]';
-    if (logText) {console.log(logText); textArea.val(logText);}
-    textArea.scrollTop(textArea[0].scrollHeight);
+    let logText: string = '\r\n' + (nowstr ? nowstr : '') + '[ ' + (info ? info : '') + ' ]';
+    if (logText) {
+        console.log(logText);
+    }
 }
 
 /**

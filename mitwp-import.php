@@ -49,8 +49,6 @@ function renderHTML() {
                         <div class="alert alert-success">
                             <strong><?php _e('REST URL : ','mitwp'); echo get_rest_url(); ?>&nbsp;-&nbsp;
                             <?php _e('USER: ','mitwp'); ?>&nbsp;<?php echo wp_get_current_user()->display_name ?></strong>
-                            <br>
-                            <textarea readonly class="form-control" rows="4" id="log"></textarea>
                         </div>
                 </div><!-- col -->
             </div><!-- row -->
