@@ -77,7 +77,7 @@ function logInfo(info: string){
     let nowstr: string = '[' + new Date().toLocaleString() + ']';
 
     logText += '\r\n' + nowstr + '[ ' + info + ' ]';
-    if (logText) {textArea.val(logText);}
+    if (logText) {console.log(logText); textArea.val(logText);}
     textArea.scrollTop(textArea[0].scrollHeight);
 }
 

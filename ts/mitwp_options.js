@@ -1,5 +1,5 @@
 "use strict";
-exports.__esModule = true;
+Object.defineProperty(exports, "__esModule", { value: true });
 var mitwpoptiontrans;
 function getSecKey() {
     return mitwpoptiontrans.seckey;
