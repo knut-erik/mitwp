@@ -17,8 +17,7 @@ function getSecKey() : string {
  * Return url to REST API
  * @returns {string} - The url to the REST API
  */
-function getApiUrl() : string {
-    
+function getApiUrl() : string {  
     return mitwpoptiontrans.apiurl + "mitwp/v1/eventcategories/";
 }
 
