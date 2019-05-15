@@ -5,7 +5,7 @@
  */
 function renderHTML() {
 
-    if ( !current_user_can('import') )
+    if ( !current_user_can('edit_posts') )
         wp_die(__('You do not have sufficient permissions of this site.'));
 
         /* Bootstrap */

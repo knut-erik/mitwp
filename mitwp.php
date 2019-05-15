@@ -97,14 +97,14 @@ function mitwp_remove() {
     //TODO: Something to do here?
 }
 
-if (is_admin() ){
-
+if (is_admin() ){ 
+ 
     /* Call the code */
     add_action('admin_menu', 'mitwp_admin_menu');
 
     function mitwp_admin_menu() {
         //add_menu_page( 'MITWP', 'Importere iCal til WP', 'administrator', 'mitwp-import','renderHTML');
-        add_menu_page( __('Import iCal to WP','mitwp'), __('Import iCal to WP','mitwp'), 'administrator', 'mitwp-import','renderHTML');
+        add_menu_page( __('Import iCal to WP','mitwp'), __('Import iCal to WP','mitwp'), 'edit_posts', 'mitwp-import','renderHTML');
         add_submenu_page('mitwp-import', __('Import iCal to WP - Options','mitwp'), __('Options','mitwp'), 'manage_options', 'mitwp-options', 'optionsHTML');
     }
 }
