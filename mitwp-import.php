@@ -64,7 +64,8 @@ function renderHTML() {
                     <div class="dropdown pull-left">
                         <button id="btn_choose_category" type="button" onClick="sortList('ul_dropdown_menu')" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"><?php _e('Choose Group','mitwp'); ?>&nbsp;<span class='glyphicon glyphicon-folder-open'></span>&nbsp;&nbsp;<span class="caret"></span></button>
                         <ul class="dropdown-menu" id="ul_dropdown_menu">
-                            <li><a href="javascript:getiCalFromUrl('<?php echo constant('GUDSTJENESTE_ICAL_UID'); ?>'
+      
+                           <li><a href="javascript:getiCalFromUrl('<?php echo constant('GUDSTJENESTE_ICAL_UID'); ?>'
                             , '<?php echo constant('GUDSTJENESTE_BTN_TXT'); ?>')"><?php echo constant('GUDSTJENESTE_BTN_TXT'); ?></a></li>
 
                             <li><a href="javascript:getiCalFromUrl('<?php echo constant('JESHA_ICAL_UID'); ?>'
@@ -73,14 +74,14 @@ function renderHTML() {
                             <li><a href="javascript:getiCalFromUrl('<?php echo constant('JENTEKVELD_ICAL_UID'); ?>'
                             , '<?php echo constant('JENTEKVELD_BTN_TXT'); ?>')"><?php echo constant('JENTEKVELD_BTN_TXT'); ?></a></li>
 
-                            <li><a href="javascript:getiCalFromUrl('<?php echo constant('ESC_ICAL_UID'); ?>'
-                            , '<?php echo constant('ESC_BTN_TXT'); ?>')"><?php echo constant('ESC_BTN_TXT'); ?></a></li>
+                            <li><a href="javascript:getiCalFromUrl('<?php echo constant('ENTER_ICAL_UID'); ?>'
+                            , '<?php echo constant('ENTER_BTN_TXT'); ?>')"><?php echo constant('ENTER_BTN_TXT'); ?></a></li>
 
                             <li><a href="javascript:getiCalFromUrl('<?php echo constant('KONFIRMANT_ICAL_UID'); ?>'
                             , '<?php echo constant('KONFIRMANT_BTN_TXT'); ?>')"><?php echo constant('KONFIRMANT_BTN_TXT'); ?></a></li>
 
-                            <li><a href="javascript:getiCalFromUrl('<?php echo constant('TABAGO_ICAL_UID'); ?>'
-                            , '<?php echo constant('TABAGO_BTN_TXT'); ?>')"><?php echo constant('TABAGO_BTN_TXT'); ?></a></li>
+                            <li><a href="javascript:getiCalFromUrl('<?php echo constant('TROSOPPLAERING_ICAL_UID'); ?>'
+                            , '<?php echo constant('TROSOPPLAERING_BTN_TXT'); ?>')"><?php echo constant('TROSOPPLAERING_BTN_TXT'); ?></a></li>
 
                             <li><a href="javascript:getiCalFromUrl('<?php echo constant('BARNEKOR_ICAL_UID'); ?>'
                             , '<?php echo constant('BARNEKOR_BTN_TXT'); ?>')"><?php echo constant('BARNEKOR_BTN_TXT'); ?></a></li>

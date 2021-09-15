@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 3.0\n"
 "X-Poedit-KeywordsList: _e;__\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
@@ -72,8 +72,8 @@ msgid "Jesha"
 msgstr "Jesha"
 
 #: mitwp.php:26
-msgid "ESC"
-msgstr "ESC"
+msgid "Enter"
+msgstr "Enter"
 
 #: mitwp.php:29
 msgid "Jentekveld"
@@ -88,8 +88,8 @@ msgid "Barnekor"
 msgstr "Barnekor"
 
 #: mitwp.php:38
-msgid "Tabago"
-msgstr "Tabago"
+msgid "Trosopplaering"
+msgstr "Trosopplæring"
 
 #: mitwp.php:41
 msgid "Konfirmant"
@@ -113,7 +113,7 @@ msgstr "Tananger Gospel"
 
 #: mitwp.php:56
 msgid "Bønnesamling"
-msgstr "Bønnesamling\t"
+msgstr "Bønnesamling"
 
 #: mitwp.php:59
 msgid "Torsdagslunsj"
